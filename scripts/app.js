@@ -6,7 +6,6 @@
 // Accessible, no external dependencies.
 
 // ---------- NAV ----------
-
 const navToggle = document.querySelector(".nav-toggle");
 const navList = document.querySelector("[data-nav]");
 if (navToggle && navList) {
@@ -110,54 +109,54 @@ Sincerely,
 [Your Name]`;
 }
 
-if (genBtn && outputEl) {
-  genBtn.addEventListener("click", () => {
-    outputEl.textContent = mockGenerate();
+// if (genBtn && outputEl) {
+//   genBtn.addEventListener("click", () => {
+//     outputEl.textContent = mockGenerate();
 
-    // analyze combined prompt + output
-    const analysis = analyze(`${promptEl?.value || ""}\n\n${outputEl.textContent}`);
+//     // analyze combined prompt + output
+//     const analysis = analyze(`${promptEl?.value || ""}\n\n${outputEl.textContent}`);
 
-    // paint results
-    if (riskBadge) {
-      riskBadge.textContent =
-        analysis.riskLevel === "RED" ? "High" :
-        analysis.riskLevel === "AMBER" ? "Medium" : "Low";
-      riskBadge.className = "badge " + (
-        analysis.riskLevel === "RED" ? "bad" :
-        analysis.riskLevel === "AMBER" ? "warn" : "ok"
-      );
-    }
+//     // paint results
+//     if (riskBadge) {
+//       riskBadge.textContent =
+//         analysis.riskLevel === "RED" ? "High" :
+//         analysis.riskLevel === "AMBER" ? "Medium" : "Low";
+//       riskBadge.className = "badge " + (
+//         analysis.riskLevel === "RED" ? "bad" :
+//         analysis.riskLevel === "AMBER" ? "warn" : "ok"
+//       );
+//     }
 
-    if (riskSummary) {
-      riskSummary.innerHTML = "";
-      const li = document.createElement("li");
-      li.textContent = `Risk level: ${analysis.riskLevel}`;
-      riskSummary.appendChild(li);
-    }
+//     if (riskSummary) {
+//       riskSummary.innerHTML = "";
+//       const li = document.createElement("li");
+//       li.textContent = `Risk level: ${analysis.riskLevel}`;
+//       riskSummary.appendChild(li);
+//     }
 
-    if (piiList) {
-      piiList.innerHTML = "";
-      if (analysis.findings.pii.length === 0) {
-        const li = document.createElement("li"); li.textContent = "No obvious PII detected."; piiList.appendChild(li);
-      } else {
-        analysis.findings.pii.forEach(f => { const li = document.createElement("li"); li.textContent = f; piiList.appendChild(li); });
-      }
-    }
+//     if (piiList) {
+//       piiList.innerHTML = "";
+//       if (analysis.findings.pii.length === 0) {
+//         const li = document.createElement("li"); li.textContent = "No obvious PII detected."; piiList.appendChild(li);
+//       } else {
+//         analysis.findings.pii.forEach(f => { const li = document.createElement("li"); li.textContent = f; piiList.appendChild(li); });
+//       }
+//     }
 
-    if (hallucinationList) {
-      hallucinationList.innerHTML = "";
-      analysis.findings.hallucination.forEach(f => { const li = document.createElement("li"); li.textContent = f; hallucinationList.appendChild(li); });
-      analysis.findings.currency.forEach(f => { const li = document.createElement("li"); li.textContent = f; hallucinationList.appendChild(li); });
-    }
+//     if (hallucinationList) {
+//       hallucinationList.innerHTML = "";
+//       analysis.findings.hallucination.forEach(f => { const li = document.createElement("li"); li.textContent = f; hallucinationList.appendChild(li); });
+//       analysis.findings.currency.forEach(f => { const li = document.createElement("li"); li.textContent = f; hallucinationList.appendChild(li); });
+//     }
 
-    if (tipsList) {
-      tipsList.innerHTML = "";
-      analysis.tips.forEach(t => { const li = document.createElement("li"); li.textContent = t; tipsList.appendChild(li); });
-    }
+//     if (tipsList) {
+//       tipsList.innerHTML = "";
+//       analysis.tips.forEach(t => { const li = document.createElement("li"); li.textContent = t; tipsList.appendChild(li); });
+//     }
 
-    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-  });
-}
+//     window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+//   });
+// }
 
 if (clearBtn && outputEl) {
   clearBtn.addEventListener("click", () => {
@@ -281,6 +280,7 @@ document.querySelectorAll("form.mcq").forEach(form => {
   }
 });
 
+// --- DeepSeek caller ---
 async function callDeepseek(prompt) {
   const res = await fetch("/api/deepseek", {
     method: "POST",
@@ -296,17 +296,21 @@ async function callDeepseek(prompt) {
   return data.answer || "";
 }
 
+// --- Generate (real) ---
 if (genBtn && outputEl) {
   genBtn.addEventListener("click", async () => {
     const userPrompt = promptEl?.value || "";
     outputEl.textContent = "Thinking…";
 
     try {
+      // 1) Call DeepSeek
       const answer = await callDeepseek(userPrompt);
-      outputEl.textContent = answer;
+      outputEl.textContent = answer || "(no content)";
 
+      // 2) Analyze ONLY the output
       const analysis = analyze(answer);
-      // ✅ Paint results (same as your mockGenerate section)
+
+      // 3) Paint results (reuse your riskBadge, piiList, etc. code here)
       if (riskBadge) {
         riskBadge.textContent =
           analysis.riskLevel === "RED" ? "High" :
@@ -361,8 +365,6 @@ if (genBtn && outputEl) {
           tipsList.appendChild(li);
         });
       }
-      // keep your existing risk panel rendering here
-
     } catch (e) {
       outputEl.textContent = `Error: ${e.message}`;
     }
