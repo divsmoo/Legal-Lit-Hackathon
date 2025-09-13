@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // scripts/app.js
 // Minimal JS to:
 // - Toggle mobile nav
@@ -6,6 +7,7 @@
 // Accessible, no external dependencies.
 
 // ---------- NAV ----------
+
 const navToggle = document.querySelector(".nav-toggle");
 const navList = document.querySelector("[data-nav]");
 if (navToggle && navList) {
@@ -109,54 +111,54 @@ Sincerely,
 [Your Name]`;
 }
 
-// if (genBtn && outputEl) {
-//   genBtn.addEventListener("click", () => {
-//     outputEl.textContent = mockGenerate();
+if (genBtn && outputEl) {
+  genBtn.addEventListener("click", () => {
+    outputEl.textContent = mockGenerate();
 
-//     // analyze combined prompt + output
-//     const analysis = analyze(`${promptEl?.value || ""}\n\n${outputEl.textContent}`);
+    // analyze combined prompt + output
+    const analysis = analyze(`${promptEl?.value || ""}\n\n${outputEl.textContent}`);
 
-//     // paint results
-//     if (riskBadge) {
-//       riskBadge.textContent =
-//         analysis.riskLevel === "RED" ? "High" :
-//         analysis.riskLevel === "AMBER" ? "Medium" : "Low";
-//       riskBadge.className = "badge " + (
-//         analysis.riskLevel === "RED" ? "bad" :
-//         analysis.riskLevel === "AMBER" ? "warn" : "ok"
-//       );
-//     }
+    // paint results
+    if (riskBadge) {
+      riskBadge.textContent =
+        analysis.riskLevel === "RED" ? "High" :
+        analysis.riskLevel === "AMBER" ? "Medium" : "Low";
+      riskBadge.className = "badge " + (
+        analysis.riskLevel === "RED" ? "bad" :
+        analysis.riskLevel === "AMBER" ? "warn" : "ok"
+      );
+    }
 
-//     if (riskSummary) {
-//       riskSummary.innerHTML = "";
-//       const li = document.createElement("li");
-//       li.textContent = `Risk level: ${analysis.riskLevel}`;
-//       riskSummary.appendChild(li);
-//     }
+    if (riskSummary) {
+      riskSummary.innerHTML = "";
+      const li = document.createElement("li");
+      li.textContent = `Risk level: ${analysis.riskLevel}`;
+      riskSummary.appendChild(li);
+    }
 
-//     if (piiList) {
-//       piiList.innerHTML = "";
-//       if (analysis.findings.pii.length === 0) {
-//         const li = document.createElement("li"); li.textContent = "No obvious PII detected."; piiList.appendChild(li);
-//       } else {
-//         analysis.findings.pii.forEach(f => { const li = document.createElement("li"); li.textContent = f; piiList.appendChild(li); });
-//       }
-//     }
+    if (piiList) {
+      piiList.innerHTML = "";
+      if (analysis.findings.pii.length === 0) {
+        const li = document.createElement("li"); li.textContent = "No obvious PII detected."; piiList.appendChild(li);
+      } else {
+        analysis.findings.pii.forEach(f => { const li = document.createElement("li"); li.textContent = f; piiList.appendChild(li); });
+      }
+    }
 
-//     if (hallucinationList) {
-//       hallucinationList.innerHTML = "";
-//       analysis.findings.hallucination.forEach(f => { const li = document.createElement("li"); li.textContent = f; hallucinationList.appendChild(li); });
-//       analysis.findings.currency.forEach(f => { const li = document.createElement("li"); li.textContent = f; hallucinationList.appendChild(li); });
-//     }
+    if (hallucinationList) {
+      hallucinationList.innerHTML = "";
+      analysis.findings.hallucination.forEach(f => { const li = document.createElement("li"); li.textContent = f; hallucinationList.appendChild(li); });
+      analysis.findings.currency.forEach(f => { const li = document.createElement("li"); li.textContent = f; hallucinationList.appendChild(li); });
+    }
 
-//     if (tipsList) {
-//       tipsList.innerHTML = "";
-//       analysis.tips.forEach(t => { const li = document.createElement("li"); li.textContent = t; tipsList.appendChild(li); });
-//     }
+    if (tipsList) {
+      tipsList.innerHTML = "";
+      analysis.tips.forEach(t => { const li = document.createElement("li"); li.textContent = t; tipsList.appendChild(li); });
+    }
 
-//     window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-//   });
-// }
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+  });
+}
 
 if (clearBtn && outputEl) {
   clearBtn.addEventListener("click", () => {
@@ -208,6 +210,42 @@ const MCQ_ANSWERS = {
       piiId: "clausePII",
       halId: "clauseHallucination"
     }
+  },
+  "letter-q1": {
+    correct: "B",
+    sourceEl: "letterOutput",
+    feedbackEl: "letterFeedback1",
+    risk: {
+      containerId: "letterRisk",
+      badgeId: "letterBadge",
+      sumId: "letterRiskSummary",
+      piiId: "letterPII",
+      halId: "letterHallucination"
+    }
+  },
+  "letter-q2": {
+    correct: "A",
+    sourceEl: "letterOutput",
+    feedbackEl: "letterFeedback2",
+    risk: {
+      containerId: "letterRisk",
+      badgeId: "letterBadge",
+      sumId: "letterRiskSummary",
+      piiId: "letterPII",
+      halId: "letterHallucination"
+    }
+  },
+  "letter-q3": {
+    correct: "B",
+    sourceEl: "letterOutput",
+    feedbackEl: "letterFeedback3",
+    risk: {
+      containerId: "letterRisk",
+      badgeId: "letterBadge",
+      sumId: "letterRiskSummary",
+      piiId: "letterPII",
+      halId: "letterHallucination"
+    }
   }
 };
 
@@ -255,7 +293,11 @@ document.querySelectorAll("form.mcq").forEach(form => {
       const pii = document.getElementById(config.risk.piiId);
       const hal = document.getElementById(config.risk.halId);
 
-      if (wrap) wrap.hidden = false;
+      if (wrap) {
+        wrap.hidden = false;
+        wrap.style.display = ""; // remove any previous none
+        wrap.setAttribute("aria-hidden", "false");
+      }
 
       if (badge) {
         badge.textContent = a.riskLevel === "RED" ? "High" : a.riskLevel === "AMBER" ? "Medium" : "Low";
@@ -280,7 +322,63 @@ document.querySelectorAll("form.mcq").forEach(form => {
   }
 });
 
-// --- DeepSeek caller ---
+// ---------- LETTER MODULE: Next Question + Risk reset ----------
+(function setupLetterNavigation(){
+  const container = document.getElementById('letterMCQs');
+  if (!container) return; // only on letter module page
+
+  const blocks = Array.from(container.querySelectorAll('.mcq-block'));
+  if (blocks.length === 0) return;
+
+  function showBlock(targetIdx){
+    // Hide all blocks; show target
+    blocks.forEach(b => { b.hidden = true; });
+    const target = blocks.find(b => Number(b.dataset.index) === targetIdx) || blocks[0];
+    target.hidden = false;
+
+    // Clear radio selection in the target block
+    target.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = false; });
+    // Clear feedback for all letter questions
+    ['letterFeedback1','letterFeedback2','letterFeedback3'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.textContent = '';
+    });
+
+    // Fully reset/hide risk coaching panel when switching questions
+    const wrap = document.getElementById('letterRisk');
+    const badge = document.getElementById('letterBadge');
+    const sum = document.getElementById('letterRiskSummary');
+    const pii = document.getElementById('letterPII');
+    const hal = document.getElementById('letterHallucination');
+    if (wrap) {
+      wrap.hidden = true;
+      wrap.style.display = "none";
+      wrap.setAttribute("aria-hidden", "true");
+    }
+    [sum, pii, hal].forEach(ul => { if (ul) ul.innerHTML = ''; });
+    if (badge){
+      badge.textContent = '–';
+      badge.classList.remove('ok','warn','bad');
+      badge.className = 'badge';
+    }
+  }
+
+  // Make the first visible by default
+  const initialIdx = Number((blocks.find(b => !b.hidden) || blocks[0]).dataset.index || 0);
+  showBlock(initialIdx);
+
+  // Wire next buttons (event delegation across all blocks)
+  container.querySelectorAll('[data-next]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const current = e.target.closest('.mcq-block');
+      const curIdx = Number(current?.dataset.index || 0);
+      const nextIdx = (curIdx + 1) % blocks.length;
+      showBlock(nextIdx);
+      current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+})();
+
 async function callDeepseek(prompt) {
   const res = await fetch("/api/deepseek", {
     method: "POST",
@@ -296,25 +394,17 @@ async function callDeepseek(prompt) {
   return data.answer || "";
 }
 
-// --- Generate (real) ---
 if (genBtn && outputEl) {
   genBtn.addEventListener("click", async () => {
     const userPrompt = promptEl?.value || "";
-    outputEl.textContent = "Thinking…"; // Show progress message
+    outputEl.textContent = "Thinking…";
 
     try {
       const answer = await callDeepseek(userPrompt);
       outputEl.textContent = answer;
 
-      // ✅ Only unhide demo-output if we have a real answer
-      if (outputEl.textContent.trim() && outputEl.textContent.trim() !== "Thinking…") {
-        const demoOutput = document.getElementById("demo-output");
-        if (demoOutput) demoOutput.hidden = false;
-      }
-
-      // Analyze and update risk panel
-      const analysis = analyze(`${userPrompt}\n\n${answer}`);
-
+      const analysis = analyze(answer);
+      // ✅ Paint results (same as your mockGenerate section)
       if (riskBadge) {
         riskBadge.textContent =
           analysis.riskLevel === "RED" ? "High" :
@@ -369,11 +459,12 @@ if (genBtn && outputEl) {
           tipsList.appendChild(li);
         });
       }
-
-      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+      // keep your existing risk panel rendering here
 
     } catch (e) {
       outputEl.textContent = `Error: ${e.message}`;
     }
   });
 }
+=======
+>>>>>>> 48ad62d75475e2b241663324911d34a1f6dd3e40

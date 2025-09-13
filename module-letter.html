@@ -60,6 +60,12 @@ Landlord
 
     <section class="card">
       <h2>What mistake did the AI most likely make?</h2>
+      <div class="progress-row" id="letterProgressRow" aria-live="polite">
+        <span id="letterProgressText">Question 1 of 6</span>
+        <div id="letterProgressBar" style="height:8px;border-radius:4px;background:#eceff3;margin-top:8px;">
+          <div id="letterProgressFill" style="height:8px;border-radius:4px;width:0%;background:#6172f3;"></div>
+        </div>
+      </div>
       <!-- MCQ: only one correct answer -->
       <form class="mcq" data-module="letter" aria-label="Multiple choice question: pick one">
         <label class="mcq-option">
@@ -134,11 +140,18 @@ Landlord
     const hintSummary = hintDetails ? hintDetails.querySelector('summary') : null;
     const feedback = document.getElementById('letterFeedback');
     const risk = document.getElementById('letterRisk');
+    const badgeEl = document.getElementById('letterBadge');
+    const riskSummaryList = document.getElementById('letterRiskSummary');
+    const piiList = document.getElementById('letterPII');
+    const hallucinationList = document.getElementById('letterHallucination');
     const form = document.querySelector('form.mcq[data-module="letter"]');
     const options = Array.from(form.querySelectorAll('.mcq-option'));
     const nextBtn = document.getElementById('nextQuestionBtn');
     // Grab the heading element for the MCQ card
     const questionHeading = form ? form.closest('section.card').querySelector('h2') : null;
+    // Progress bar and counter elements
+    const progressText = document.getElementById('letterProgressText');
+    const progressFill = document.getElementById('letterProgressFill');
 
     // Define scenarios (focus: factual inaccuracies, outdated refs, over-definitive statements, PII exposure)
     const scenarios = [
@@ -338,9 +351,17 @@ Landlord
       });
       // Stash correct answer for any custom logic; harmless if unused by existing scripts
       form.dataset.correct = sc.correct;
+      // Update progress indicator and bar
+      if (progressText) progressText.textContent = `Question ${i + 1} of ${scenarios.length}`;
+      if (progressFill) progressFill.style.width = `${Math.round((i / scenarios.length) * 100)}%`;
+      // Reset risk coaching when switching questions
+      if (badgeEl) badgeEl.textContent = '–';
+      if (riskSummaryList) riskSummaryList.innerHTML = '';
+      if (piiList) piiList.innerHTML = '';
+      if (hallucinationList) hallucinationList.innerHTML = '';
+      if (risk) risk.hidden = true;
       // Reset feedback and risk panels
       if (feedback) feedback.textContent = '';
-      if (risk) risk.hidden = true;
       // Move focus for accessibility
       form.querySelector('input[type="radio"]').focus({ preventScroll: false });
     }
@@ -363,6 +384,12 @@ Landlord
       nextBtn.addEventListener('click', function () {
         idx = (idx + 1) % scenarios.length;
         render(idx);
+        // Ensure previous risk panel does not persist to next question
+        if (badgeEl) badgeEl.textContent = '–';
+        if (riskSummaryList) riskSummaryList.innerHTML = '';
+        if (piiList) piiList.innerHTML = '';
+        if (hallucinationList) hallucinationList.innerHTML = '';
+        if (risk) risk.hidden = true;
         // Announce change
         if (feedback) feedback.setAttribute('aria-live', 'polite');
       });
@@ -370,6 +397,7 @@ Landlord
 
     // Initial render ensures dataset.correct is set for scenario 0
     render(idx);
+    if (risk) risk.hidden = true;
   })();
   </script>
 </body>

@@ -21,38 +21,42 @@
 
     <section class="hero hero-small">
       <h1>Draft a Legal Clause</h1>
-      <p>Review an AI-generated tenancy clause letter and find the issue.</p>
+      <p>Review an AI-generated tenancy clause and find the issue.</p>
     </section>
   </header>
 <main id="main" class="container">
     <section class="card">
       <h2>Prompt used</h2>
       <pre class="pre small">
-Draft a Singapore‑law compliant clause letter about unpaid rent that cites the correct contract clause and/or current statute.
+Draft a Singapore‑law compliant clause about unpaid rent that cites the correct contract clause and/or current statute.
 Avoid including personal identifiers (names, NRIC/FIN, phone, email, unit numbers). Use measured language (no guaranteed outcomes).
       </pre>
     </section>
 
     <section class="card">
-      <h2>AI-Generated Letter (mock)</h2>
+      <h2>AI-Generated Clause (mock)</h2>
       <pre class="pre" id="letterOutput">
-Dear Mr. Tan (NRIC: S1234567A),
+Clause 12 — Payment Default & Termination
 
-As per the Landlord and Tenant Act 1954, you are required to pay your overdue rent of S$7,500 immediately (note: actual arrears are S$5,000).
-We hereby absolutely terminate your tenancy without exception if payment is not received within 7 days.
+If the Tenant, Tan Wei Ming (NRIC: S1234567A), fails to pay the sum of S$7,500 by the Due Date (actual arrears: S$5,000), the Landlord shall automatically and without exception terminate the Tenancy within seven (7) days.
 
-Yours sincerely,
-Landlord
+This clause is enforceable under the Landlord and Tenant Act 1954 s 34(2).
       </pre>
 
       <details class="hint">
         <summary>Need a hint?</summary>
-        Watch for (1) unredacted PII, (2) outdated or wrong‑jurisdiction law, (3) overly definitive promises, and (4) factual inaccuracies or hallucinated clauses.
+        Watch for (1) unredacted PII inside clauses, (2) outdated or wrong‑jurisdiction law, (3) overly definitive promises, and (4) factual inaccuracies or hallucinated clauses.
       </details>
     </section>
 
     <section class="card">
       <h2>What mistake did the AI most likely make?</h2>
+      <div class="progress-row" id="clauseProgressRow" aria-live="polite">
+        <span id="clauseProgressText">Question 1 of 6</span>
+        <div id="clauseProgressBar" style="height:8px;border-radius:4px;background:#eceff3;margin-top:8px;">
+          <div id="clauseProgressFill" style="height:8px;border-radius:4px;width:0%;background:#6172f3;"></div>
+        </div>
+      </div>
       <form class="mcq" data-module="clause" aria-label="Multiple choice question: pick one">
         <label class="mcq-option">
           <input type="radio" name="q1" value="A" />
@@ -99,12 +103,12 @@ Landlord
     <section class="card">
       <h2>Learning points</h2>
       <ul class="bullets">
-        <li><strong>Confidentiality (PII):</strong> Always <em>redact NRIC/FIN</em>, unit/address, phone, and email in letters and summaries.</li>
+        <li><strong>Confidentiality (PII):</strong> Always <em>redact NRIC/FIN</em>, unit/address, phone, and email in contract texts and clause examples.</li>
         <li><strong>Correct &amp; local authority:</strong> Prefer <em>Singapore</em> statutes/cases; do not treat <em>foreign</em> law (e.g., UK L&amp;T Act 1985) as binding unless clearly applicable.</li>
         <li><strong>Currency of law:</strong> Check that cited provisions are <em>current</em> (e.g., expired temporary COVID‑19 measures should not be treated as active).</li>
         <li><strong>No guarantees:</strong> Avoid absolutes like “automatic,” “guaranteed,” “will obtain”; use qualified language subject to <em>facts, contract, and court discretion</em>.</li>
         <li><strong>Existence &amp; accuracy:</strong> Verify any <em>contract clause</em> or <em>statute section</em> actually exists and is correctly titled/numbered.</li>
-        <li><strong>Factual checks:</strong> Validate key facts (e.g., arrears amount) before sending; correct AI arithmetic/assumptions.</li>
+        <li><strong>Factual checks:</strong> Validate key facts (e.g., arrears amount) before relying on a clause; correct AI arithmetic/assumptions.</li>
         <li><strong>Specificity to contract:</strong> Cite the <em>exact clause</em> where relevant; otherwise cite the precise statute/section instead of “as per the law.”</li>
         <li><strong>“Latest authority” claims:</strong> If asserting “latest,” confirm the <em>date</em> and <em>court level</em> (SGCA outranks SGHC) or avoid that claim.</li>
       </ul>
@@ -128,26 +132,26 @@ Landlord
     const sumList = document.getElementById('clauseRiskSummary');
     const piiList = document.getElementById('clausePII');
     const hallList = document.getElementById('clauseHallucination');
+    const progressText = document.getElementById('clauseProgressText');
+    const progressFill = document.getElementById('clauseProgressFill');
 
     // Clause-focused scenarios (factual inaccuracies, outdated/foreign refs, guarantees, PII, hallucinated clauses)
     const scenarios = [
       // 1) PII + guarantee + wrong arrears (Correct: B)
       {
-        question: 'What mistake did the AI most likely make?',
+        question: 'What mistake did the AI most likely make in this clause?',
         prompt: [
-          'Draft a Singapore-law compliant clause letter about unpaid rent that cites the correct contract clause and/or current statute.',
+          'Draft a Singapore-law compliant clause about unpaid rent that cites the correct contract clause and/or current statute.',
           'Avoid personal identifiers. Use measured language.'
         ].join('\n'),
         letter: [
-          'Dear Mr. Tan (NRIC: S1234567A),',
+          'Clause 12 — Payment Default & Termination',
           '',
-          'As per the Landlord and Tenant Act 1954, you must pay overdue rent of S$7,500 immediately (actual arrears are S$5,000).',
-          'We hereby absolutely terminate your tenancy without exception if payment is not received within 7 days.',
+          'If the Tenant, Tan Wei Ming (NRIC: S1234567A), fails to pay the sum of S$7,500 by the Due Date (actual arrears: S$5,000), the Landlord shall automatically and without exception terminate the Tenancy within seven (7) days.',
           '',
-          'Yours sincerely,',
-          'Landlord'
+          'This clause is enforceable under the Landlord and Tenant Act 1954 s 34(2).'
         ].join('\n'),
-        hint: 'Unredacted PII, outdated statute title, over‑definitive language, and fact error (amount).',
+        hint: 'Unredacted PII inside clauses, outdated statute title, over‑definitive language, and fact error (amount).',
         options: [
           'A) It verifies the clause and cites current law cautiously.',
           'B) It exposes PII, misstates arrears, and uses guarantees.',
@@ -176,17 +180,13 @@ Landlord
       {
         question: 'What possible contract clause issue is present?',
         prompt: [
-          'Write a letter invoking the repair obligations under the Tenancy Agreement.',
+          'Draft a clause invoking the repair obligations under the Tenancy Agreement.',
           'If you cite a clause, ensure it exists and is correctly numbered.'
         ].join('\n'),
         letter: [
-          'Dear Tenant,',
+          'Clause 18.7 — Immediate Replacement of Air‑Conditioning',
           '',
-          'Under Clause 18.7 of your Tenancy Agreement, you must replace the air‑conditioning within 24 hours.',
-          'Please confirm completion by tomorrow.',
-          '',
-          'Sincerely,',
-          'Landlord'
+          'Under Clause 18.7 of this Agreement, the Tenant must replace the air‑conditioning within twenty‑four (24) hours of any malfunction. Non‑compliance constitutes a fundamental breach.'
         ].join('\n'),
         hint: 'Clause numbers can be hallucinated; verify against the contract.',
         options: [
@@ -213,21 +213,17 @@ Landlord
       },
       // 3) Foreign law misuse (Correct: A)
       {
-        question: 'Why is this AI‑generated demand letter problematic?',
+        question: 'Why is this AI‑generated clause problematic?',
         prompt: [
-          'Draft a demand letter for repairs citing applicable authority.',
+          'Draft a repairs obligation clause citing applicable authority.',
           'Avoid foreign or outdated law.'
         ].join('\n'),
         letter: [
-          'Dear Tenant,',
+          'Repairs Clause — Strict Liability',
           '',
-          'Per Section 14 of the UK Landlord and Tenant Act 1985, you are strictly liable to repair immediately.',
-          'Please fix the issues within 7 days.',
-          '',
-          'Sincerely,',
-          'Landlord'
+          'Per Section 14 of the UK Landlord and Tenant Act 1985, the Tenant is strictly liable to repair immediately upon notice from the Landlord. This obligation is absolute.'
         ].join('\n'),
-        hint: 'Check jurisdiction — UK statute vs Singapore contract/statutes.',
+        hint: 'Check jurisdiction — UK statute vs Singapore contract/statutes in a clause.',
         options: [
           'A) It relies on a UK statute that is not binding in Singapore.',
           'B) It avoids PII flawlessly.',
@@ -254,16 +250,12 @@ Landlord
       {
         question: 'What is the flaw in citing legislation here?',
         prompt: [
-          'Draft a payment relief letter referencing statutory relief if any remains in force.'
+          'Draft a rent relief clause referencing statutory relief if any remains in force.'
         ].join('\n'),
         letter: [
-          'Dear Tenant,',
+          'Rent Relief Clause — COVID‑19 Measures',
           '',
-          'You remain eligible for relief under Part 2 of the COVID‑19 (Temporary Measures) Act for rental waivers.',
-          'Please apply by completing the attached form.',
-          '',
-          'Sincerely,',
-          'Landlord'
+          'The Tenant remains eligible for relief under Part 2 of the COVID‑19 (Temporary Measures) Act for rental waivers throughout the Term of this Agreement.'
         ].join('\n'),
         hint: 'Consider whether the cited temporary relief remains in force.',
         options: [
@@ -292,16 +284,12 @@ Landlord
       {
         question: 'Which drafting issue stands out in this notice?',
         prompt: [
-          'Draft a late‑payment notice using measured language; do not guarantee outcomes.'
+          'Draft a late‑payment clause using measured language; do not guarantee outcomes.'
         ].join('\n'),
         letter: [
-          'Dear Tenant,',
+          'Late Payment Consequences Clause',
           '',
-          'This notice serves as breach for persistent late payment.',
-          'We will obtain a court order for possession and costs next week.',
-          '',
-          'Sincerely,',
-          'Property Manager'
+          'Persistent late payment shall result in the Landlord obtaining a court order for possession and full costs within seven (7) days of notice.'
         ].join('\n'),
         hint: 'Absolute predictions about litigation outcomes are risky.',
         options: [
@@ -330,17 +318,13 @@ Landlord
       {
         question: 'Which legal reference error did the AI commit?',
         prompt: [
-          'Draft a clause‑based payment demand and cite applicable Singapore law if needed.',
+          'Draft a payment demand clause and cite applicable Singapore law if needed.',
           'Ensure the law title/section is correct and current.'
         ].join('\n'),
         letter: [
-          'Dear Tenant,',
+          'Vacate on Demand Clause',
           '',
-          'Under the Tenancies and Property Act 1970 s 21(4), you must vacate within 7 days.',
-          'Please arrange handover with our office.',
-          '',
-          'Regards,',
-          'Property Manager'
+          'Under the Tenancies and Property Act 1970 s 21(4), the Tenant must vacate within seven (7) days of request by the Landlord.'
         ].join('\n'),
         hint: 'Check that the named Act/section actually exists for Singapore tenancy law.',
         options: [
@@ -409,6 +393,9 @@ Landlord
       if (sumList) sumList.innerHTML = '';
       if (piiList) piiList.innerHTML = '';
       if (hallList) hallList.innerHTML = '';
+      // Update progress indicator
+      if (progressText) progressText.textContent = `Question ${i + 1} of ${scenarios.length}`;
+      if (progressFill) progressFill.style.width = `${Math.round((i / scenarios.length) * 100)}%`;
       // Focus first radio
       const firstRadio = form.querySelector('input[type="radio"]');
       if (firstRadio) firstRadio.focus({ preventScroll: false });
