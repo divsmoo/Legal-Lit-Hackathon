@@ -1,14 +1,14 @@
 :root{
-    --bg:#f9fafb;
+    --bg:#ffffff;
     --card:#ffffff;
-    --text:#111827;
-    --muted:#6b7280;
-    --brand:#5b7cfa;
+    --text:#0b0b0b;
+    --muted:#374151;
+    --brand:#1d4ed8;
     --brand-2:#e7ecff;
     --ok:#16a34a;
     --warn:#f59e0b;
     --bad:#dc2626;
-    --border:#e5e7eb;
+    --border:#d1d5db;
     --max:1100px;
     --radius:14px;
   }
@@ -117,10 +117,8 @@
 
 /* Page background subtle depth */
 body{
-  background:
-    radial-gradient(90rem 60rem at 120% -10%, #eef2ff 0%, transparent 35%),
-    radial-gradient(60rem 40rem at -20% 20%, #f0fdf4 0%, transparent 35%),
-    var(--bg);
+  background:#ffffff;
+  color:var(--text);
 }
 
 /* Header/hero polish */
@@ -192,42 +190,12 @@ textarea:focus, input[type="text"]:focus{outline:none;box-shadow:var(--ring);bor
 /* Dark mode adjustments */
 @media (prefers-color-scheme: dark){
   :root{
-    --bg:#0b1220; --card:#0e1628; --text:#e5e7eb; --muted:#9ca3af; --border:#1f2937; --brand-2:#1e293b;
+    --bg:#ffffff; --card:#ffffff; --text:#0b0b0b; --muted:#374151; --border:#d1d5db; --brand-2:#1d4ed8;
   }
-  body{background:
-    radial-gradient(90rem 60rem at 120% -10%, #0b1a3a 0%, transparent 35%),
-    radial-gradient(60rem 40rem at -20% 20%, #0f2a1b 0%, transparent 35%),
-    var(--bg);
-  }
-  .site-header{background:linear-gradient(180deg,#0e1628 0%, #0b1220 100%)}
-  .card{box-shadow:none;border-color:#253047}
-  .btn-ghost{background:#0e1628;color:#e5e7eb;border-color:#253047}
-  .hint{background:#0f172a;border-color:#1f2a44}
-  #letterProgressBar, #summaryProgressBar, #clauseProgressBar{background:#1f2937}
-
-  /* High-contrast pre blocks in dark mode */
-  .pre{background:#0f172a;border-color:#293249;color:#e5e7eb}
-  .pre.small{color:#e5e7eb}
-
-  /* Panels and cards inside dark mode */
-  .panel{background:#0e1628;border-color:#253047}
-  .card{background:#0e1628;color:#e5e7eb}
-
-  /* MCQ options contrast in dark */
-  .mcq-option{background:#0f172a;border-color:#243045;color:#e5e7eb}
-  .mcq-option:hover{background:#111b2f}
-  @supports(selector(label:has(input:checked))){
-    label.mcq-option:has(input:checked){
-      border-color:#3b82f6;background:#11213d;box-shadow:0 0 0 3px rgba(59,130,246,.25) inset
-    }
-  }
-
-  /* Hint block contrast */
-  .hint{background:#0f172a;border-color:#1f2a44;color:#e5e7eb}
-
-  /* Progress bars */
-  #letterProgressBar, #summaryProgressBar, #clauseProgressBar{background:#1f2937}
-  #letterProgressFill, #summaryProgressFill, #clauseProgressFill{background:linear-gradient(90deg,#7ea1ff,#a7c4ff)}
+  body{background:#ffffff;color:#0b0b0b;}
+  .card{background:#ffffff;color:#0b0b0b;}
+  .panel{background:#ffffff;color:#0b0b0b;}
+  .pre{background:#f8fafc;color:#111827;}
 }
 
 /* Subtle entrance animation for cards */
