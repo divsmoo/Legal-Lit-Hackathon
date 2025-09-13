@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // scripts/app.js
 // Minimal JS to:
 // - Toggle mobile nav
@@ -465,3 +466,5 @@ if (genBtn && outputEl) {
     }
   });
 }
+=======
+>>>>>>> 48ad62d75475e2b241663324911d34a1f6dd3e40
