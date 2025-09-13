@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Module: Summarise a Judgment • Legal AI Coach</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <nav class="nav">
+      <a class="brand" href="/">Legal AI Coach</a>
+      <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+      <ul class="nav-links" data-nav>
+        <li><a href="learn.html">Explore Modules</a></li>
+        <li><a href="privacy.html">Disclaimer</a></li>
+      </ul>
+    </nav>
+
+    <section class="hero hero-small">
+      <h1>Summarise a Judgment</h1>
+      <p>Does the AI summary show sufficient authority and currency?</p>
+    </section>
+  </header>
+
+  <main id="main" class="container">
+    <section class="card">
+      <h2>Prompt used</h2>
+      <pre class="pre small">
+Summarise the key holdings of a recent Singapore Court of Appeal decision on landlord-tenant disputes.
+Provide the case name, citation, and the year of decision.
+      </pre>
+    </section>
+
+    <section class="card">
+      <h2>AI-Generated Summary (mock)</h2>
+      <pre class="pre" id="summaryOutput">
+The court decided that landlords can always keep the full deposit when tenants leave early.
+The judgment is authoritative as per the law. 
+      </pre>
+
+      <details class="hint">
+        <summary>Need a hint?</summary>
+        Look for missing case name/citation and over-broad claims (“always”).
+      </details>
+    </section>
+
+    <section class="card">
+      <h2>What is the best critique?</h2>
+      <form class="mcq" data-module="summary">
+        <label class="mcq-option">
+          <input type="radio" name="q1" value="A" />
+          A) The summary properly cites the case by name and neutral citation.
+        </label>
+        <label class="mcq-option">
+          <input type="radio" name="q1" value="B" />
+          B) The phrase “always” is overly absolute; and there is no case name/citation/year.
+        </label>
+        <label class="mcq-option">
+          <input type="radio" name="q1" value="C" />
+          C) The summary is acceptable because it references “the law” generally.
+        </label>
+        <label class="mcq-option">
+          <input type="radio" name="q1" value="D" />
+          D) The currency is clear from the text.
+        </label>
+
+        <div class="actions">
+          <button class="btn" type="submit">Check Answer</button>
+          <button class="btn btn-secondary" type="button" data-show-analysis>Show Risk Coaching</button>
+        </div>
+      </form>
+
+      <div class="feedback" id="summaryFeedback" role="status" aria-live="polite"></div>
+
+      <div class="grid-3" id="summaryRisk" hidden>
+        <div class="panel">
+          <h3>Overall Risk <span class="badge" id="summaryBadge">–</span></h3>
+          <ul class="list" id="summaryRiskSummary"></ul>
+        </div>
+        <div class="panel">
+          <h3>Confidentiality</h3>
+          <ul class="list" id="summaryPII"></ul>
+        </div>
+        <div class="panel">
+          <h3>Hallucination / Currency</h3>
+          <ul class="list" id="summaryHallucination"></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Learning points</h2>
+      <ul class="bullets">
+        <li>Always include <em>case name</em>, <em>neutral citation</em>, and <em>year</em> for summaries.</li>
+        <li>Avoid absolute statements; outcomes depend on facts and law.</li>
+        <li>State jurisdiction and date (e.g., “Singapore law, as at Sep 2025”).</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Educational prototype. Not legal advice. Consult a qualified lawyer.</p>
+  </footer>
+
+  <script src="scripts/app.js" defer></script>
+</body>
+</html>

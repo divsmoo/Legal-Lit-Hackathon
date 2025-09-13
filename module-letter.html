@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Module: Draft a Legal Letter • Legal AI Coach</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <nav class="nav">
+      <a class="brand" href="/">Legal AI Coach</a>
+      <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+      <ul class="nav-links" data-nav>
+        <li><a href="learn.html">Explore Modules</a></li>
+        <li><a href="privacy.html">Disclaimer</a></li>
+      </ul>
+    </nav>
+
+    <section class="hero hero-small">
+      <h1>Draft a Legal Letter</h1>
+      <p>Review an AI-generated tenancy termination letter and find the issue.</p>
+    </section>
+  </header>
+
+  <main id="main" class="container">
+    <section class="card">
+      <h2>Prompt used</h2>
+      <pre class="pre small" aria-label="Prompt example">
+Draft a tenancy termination letter for a residential lease in Singapore. 
+Cite any relevant statute or clause if needed. Avoid including personal identifiers.
+      </pre>
+    </section>
+
+    <section class="card">
+      <h2>AI-Generated Letter (mock)</h2>
+      <pre class="pre" id="letterOutput" aria-live="polite">
+Dear Sir/Madam,
+
+This letter provides notice of termination of the Tenancy Agreement for 12 Sample Avenue, Singapore 123456.
+As per the law, the tenancy will end on 30 November 2025.
+
+The landlord guarantees the return of the full security deposit within 7 days.
+Please contact the undersigned at john.doe@example.com for coordination.
+
+Sincerely,
+Landlord
+      </pre>
+
+      <details class="hint">
+        <summary>Need a hint?</summary>
+        Look for vague legal references, absolute language, and potential PII.
+      </details>
+    </section>
+
+    <section class="card">
+      <h2>What mistake did the AI most likely make?</h2>
+      <!-- MCQ: only one correct answer -->
+      <form class="mcq" data-module="letter" aria-label="Multiple choice question: pick one">
+        <label class="mcq-option">
+          <input type="radio" name="q1" value="A" />
+          A) It cited “Section 14(2) of the XYZ Act (2020)” which does not exist.
+        </label>
+        <label class="mcq-option">
+          <input type="radio" name="q1" value="B" />
+          B) It used vague legal reference “As per the law” without specifying statute/section.
+        </label>
+        <label class="mcq-option">
+          <input type="radio" name="q1" value="C" />
+          C) It avoided all personal data and did not include contact info.
+        </label>
+        <label class="mcq-option">
+          <input type="radio" name="q1" value="D" />
+          D) It used cautious language without guarantees.
+        </label>
+
+        <div class="actions">
+          <button class="btn" type="submit">Check Answer</button>
+          <button class="btn btn-secondary" type="button" data-show-analysis>Show Risk Coaching</button>
+        </div>
+      </form>
+
+      <div class="feedback" id="letterFeedback" role="status" aria-live="polite"></div>
+
+      <div class="grid-3" id="letterRisk" hidden>
+        <div class="panel">
+          <h3>Overall Risk <span class="badge" id="letterBadge">–</span></h3>
+          <ul class="list" id="letterRiskSummary"></ul>
+        </div>
+        <div class="panel">
+          <h3>Confidentiality</h3>
+          <ul class="list" id="letterPII"></ul>
+        </div>
+        <div class="panel">
+          <h3>Hallucination / Currency</h3>
+          <ul class="list" id="letterHallucination"></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Learning points</h2>
+      <ul class="bullets">
+        <li>Specify statutes/sections (e.g., <em>Residential Tenancies Act</em> equivalent, if applicable) or cite contract clauses.</li>
+        <li>Avoid absolute promises (“guarantees”); prefer “subject to inspection / applicable law”.</li>
+        <li>Do not include PII in prompts or outputs unless required and properly handled.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Educational prototype. Not legal advice. Consult a qualified lawyer.</p>
+  </footer>
+
+  <script src="scripts/app.js" defer></script>
+</body>
+</html>

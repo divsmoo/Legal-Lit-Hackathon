@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Module: Review a Contract Clause • Legal AI Coach</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <nav class="nav">
+      <a class="brand" href="/">Legal AI Coach</a>
+      <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+      <ul class="nav-links" data-nav>
+        <li><a href="learn.html">Explore Modules</a></li>
+        <li><a href="privacy.html">Disclaimer</a></li>
+      </ul>
+    </nav>
+
+    <section class="hero hero-small">
+      <h1>Review a Contract Clause</h1>
+      <p>Evaluate an AI-proposed clause for specificity and currency.</p>
+    </section>
+  </header>
+
+  <main id="main" class="container">
+    <section class="card">
+      <h2>Prompt used</h2>
+      <pre class="pre small">
+Suggest a Singapore-law compliant confidentiality clause for an NDA. 
+Cite relevant statute/authorities where appropriate.
+      </pre>
+    </section>
+
+    <section class="card">
+      <h2>AI-Proposed Clause (mock)</h2>
+      <pre class="pre" id="clauseOutput">
+The Receiving Party shall keep all information confidential under the law. 
+This clause complies with the Companies Act (Cap. 50, 1998) and guarantees no disclosure in any circumstances.
+      </pre>
+
+      <details class="hint">
+        <summary>Need a hint?</summary>
+        Check for vague references, outdated citations, and absolute guarantees.
+      </details>
+    </section>
+
+    <section class="card">
+      <h2>What is the strongest critique?</h2>
+      <form class="mcq" data-module="clause">
+        <label class="mcq-option">
+          <input type="radio" name="q1" value="A" />
+          A) “Under the law” is sufficiently specific for enforceability.
+        </label>
+        <label class="mcq-option">
+          <input type="radio" name="q1" value="B" />
+          B) Refers to Companies Act (Cap. 50, 1998) without checking current revision; also uses absolute “guarantees”.
+        </label>
+        <label class="mcq-option">
+          <input type="radio" name="q1" value="C" />
+          C) The clause is perfect because it is brief.
+        </label>
+        <label class="mcq-option">
+          <input type="radio" name="q1" value="D" />
+          D) There is clear case law citation included.
+        </label>
+
+        <div class="actions">
+          <button class="btn" type="submit">Check Answer</button>
+          <button class="btn btn-secondary" type="button" data-show-analysis>Show Risk Coaching</button>
+        </div>
+      </form>
+
+      <div class="feedback" id="clauseFeedback" role="status" aria-live="polite"></div>
+
+      <div class="grid-3" id="clauseRisk" hidden>
+        <div class="panel">
+          <h3>Overall Risk <span class="badge" id="clauseBadge">–</span></h3>
+          <ul class="list" id="clauseRiskSummary"></ul>
+        </div>
+        <div class="panel">
+          <h3>Confidentiality</h3>
+          <ul class="list" id="clausePII"></ul>
+        </div>
+        <div class="panel">
+          <h3>Hallucination / Currency</h3>
+          <ul class="list" id="clauseHallucination"></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Learning points</h2>
+      <ul class="bullets">
+        <li>Specify scope, carve-outs, and permitted disclosures.</li>
+        <li>Avoid absolute guarantees; obligations often subject to law and exceptions.</li>
+        <li>Verify citations and currency (Cap updates, revisions, and year).</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Educational prototype. Not legal advice. Consult a qualified lawyer.</p>
+  </footer>
+
+  <script src="scripts/app.js" defer></script>
+</body>
+</html>
