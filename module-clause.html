@@ -1,8 +1,35 @@
-  <main id="main" class="container">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Legal AI Coach — Clause Module</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <nav class="nav">
+      <a class="brand" href="/">Legal AI Coach</a>
+      <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+      <ul class="nav-links" data-nav>
+        <li><a href="learn.html">Explore Modules</a></li>
+        <li><a href="privacy.html">Disclaimer</a></li>
+      </ul>
+    </nav>
+
+    <section class="hero hero-small">
+      <h1>Draft a Legal Clause</h1>
+      <p>Review an AI-generated tenancy clause letter and find the issue.</p>
+    </section>
+  </header>
+<main id="main" class="container">
     <section class="card">
       <h2>Prompt used</h2>
       <pre class="pre small">
-Draft a Singapore-law compliant demand letter for unpaid rent, citing relevant law and addressing the tenant.
+Draft a Singapore‑law compliant clause letter about unpaid rent that cites the correct contract clause and/or current statute.
+Avoid including personal identifiers (names, NRIC/FIN, phone, email, unit numbers). Use measured language (no guaranteed outcomes).
       </pre>
     </section>
 
@@ -11,7 +38,7 @@ Draft a Singapore-law compliant demand letter for unpaid rent, citing relevant l
       <pre class="pre" id="letterOutput">
 Dear Mr. Tan (NRIC: S1234567A),
 
-As per the Landlord and Tenant Act 1954, you are required to pay your overdue rent of S$7,500 immediately (note: actual arrears are S$5,000). 
+As per the Landlord and Tenant Act 1954, you are required to pay your overdue rent of S$7,500 immediately (note: actual arrears are S$5,000).
 We hereby absolutely terminate your tenancy without exception if payment is not received within 7 days.
 
 Yours sincerely,
@@ -20,73 +47,51 @@ Landlord
 
       <details class="hint">
         <summary>Need a hint?</summary>
-        Look for factual errors, outdated references, over‑definitive language, and disclosure of confidential information.
+        Watch for (1) unredacted PII, (2) outdated or wrong‑jurisdiction law, (3) overly definitive promises, and (4) factual inaccuracies or hallucinated clauses.
       </details>
     </section>
 
     <section class="card">
-      <h2>Questions</h2>
-      <div id="letterMCQs">
-        <div class="mcq-block" data-index="0">
-          <form class="mcq" data-module="letter-q1">
-            <p>Q1. What is the strongest critique of this AI-generated letter?</p>
-            <label class="mcq-option"><input type="radio" name="q1" value="A" /> A) It is flawless and compliant.</label>
-            <label class="mcq-option"><input type="radio" name="q1" value="B" /> B) It cites an outdated Act and uses over‑definitive language.</label>
-            <label class="mcq-option"><input type="radio" name="q1" value="C" /> C) The rent arrears amount is correct.</label>
-            <label class="mcq-option"><input type="radio" name="q1" value="D" /> D) It properly redacts confidential details.</label>
-            <div class="actions">
-              <button class="btn" type="submit">Check Answer</button>
-              <button class="btn btn-secondary" type="button" data-show-analysis>Show Risk Coaching</button>
-              <button class="btn btn-tertiary" type="button" data-next>Next Question</button>
-            </div>
-          </form>
-          <div class="feedback" id="letterFeedback1" role="status" aria-live="polite"></div>
-        </div>
+      <h2>What mistake did the AI most likely make?</h2>
+      <form class="mcq" data-module="clause" aria-label="Multiple choice question: pick one">
+        <label class="mcq-option">
+          <input type="radio" name="q1" value="A" />
+          A) It cites the correct and current clause/statute and avoids PII.
+        </label>
+        <label class="mcq-option">
+          <input type="radio" name="q1" value="B" />
+          B) It reveals confidential identifiers and guarantees outcomes.
+        </label>
+        <label class="mcq-option">
+          <input type="radio" name="q1" value="C" />
+          C) It cautiously qualifies conclusions and verifies currency.
+        </label>
+        <label class="mcq-option">
+          <input type="radio" name="q1" value="D" />
+          D) It relies on up‑to‑date Singapore tenancy law without errors.
+        </label>
 
-        <div class="mcq-block" data-index="1" hidden>
-          <form class="mcq" data-module="letter-q2">
-            <p>Q2. What confidentiality risk is present?</p>
-            <label class="mcq-option"><input type="radio" name="q2" value="A" /> A) The letter discloses the tenant's NRIC number without redaction.</label>
-            <label class="mcq-option"><input type="radio" name="q2" value="B" /> B) No confidentiality risk exists.</label>
-            <label class="mcq-option"><input type="radio" name="q2" value="C" /> C) The landlord's name is always confidential.</label>
-            <label class="mcq-option"><input type="radio" name="q2" value="D" /> D) The letter cites case law unnecessarily.</label>
-            <div class="actions">
-              <button class="btn" type="submit">Check Answer</button>
-              <button class="btn btn-secondary" type="button" data-show-analysis>Show Risk Coaching</button>
-              <button class="btn btn-tertiary" type="button" data-next>Next Question</button>
-            </div>
-          </form>
-          <div class="feedback" id="letterFeedback2" role="status" aria-live="polite"></div>
+        <div class="actions">
+          <button class="btn" type="submit">Check Answer</button>
+          <button class="btn btn-secondary" type="button" data-show-analysis>Show Risk Coaching</button>
+          <button class="btn btn-tertiary" type="button" id="nextClauseBtn" aria-controls="main">Next Question ▶</button>
         </div>
+      </form>
 
-        <div class="mcq-block" data-index="2" hidden>
-          <form class="mcq" data-module="letter-q3">
-            <p>Q3. Which statement in the letter is overly definitive?</p>
-            <label class="mcq-option"><input type="radio" name="q3" value="A" /> A) "Overdue rent of S$7,500 immediately"</label>
-            <label class="mcq-option"><input type="radio" name="q3" value="B" /> B) "We hereby absolutely terminate your tenancy without exception"</label>
-            <label class="mcq-option"><input type="radio" name="q3" value="C" /> C) "Yours sincerely"</label>
-            <label class="mcq-option"><input type="radio" name="q3" value="D" /> D) "Dear Mr. Tan"</label>
-            <div class="actions">
-              <button class="btn" type="submit">Check Answer</button>
-              <button class="btn btn-secondary" type="button" data-show-analysis>Show Risk Coaching</button>
-            </div>
-          </form>
-          <div class="feedback" id="letterFeedback3" role="status" aria-live="polite"></div>
-        </div>
-      </div>
+      <div class="feedback" id="clauseFeedback" role="status" aria-live="polite"></div>
 
-      <div class="grid-3" id="letterRisk" hidden>
+      <div class="grid-3" id="clauseRisk" hidden>
         <div class="panel">
-          <h3>Overall Risk <span class="badge" id="letterBadge">–</span></h3>
-          <ul class="list" id="letterRiskSummary"></ul>
+          <h3>Overall Risk <span class="badge" id="clauseBadge">–</span></h3>
+          <ul class="list" id="clauseRiskSummary"></ul>
         </div>
         <div class="panel">
           <h3>Confidentiality</h3>
-          <ul class="list" id="letterPII"></ul>
+          <ul class="list" id="clausePII"></ul>
         </div>
         <div class="panel">
           <h3>Hallucination / Currency</h3>
-          <ul class="list" id="letterHallucination"></ul>
+          <ul class="list" id="clauseHallucination"></ul>
         </div>
       </div>
     </section>
@@ -94,10 +99,383 @@ Landlord
     <section class="card">
       <h2>Learning points</h2>
       <ul class="bullets">
-        <li>Verify factual accuracy (amounts, names, dates).</li>
-        <li>Always check that statutes cited are current and relevant.</li>
-        <li>Redact or omit confidential identifiers (e.g. NRIC numbers).</li>
-        <li>Avoid absolute statements; legal outcomes depend on context and exceptions.</li>
+        <li><strong>Confidentiality (PII):</strong> Always <em>redact NRIC/FIN</em>, unit/address, phone, and email in letters and summaries.</li>
+        <li><strong>Correct &amp; local authority:</strong> Prefer <em>Singapore</em> statutes/cases; do not treat <em>foreign</em> law (e.g., UK L&amp;T Act 1985) as binding unless clearly applicable.</li>
+        <li><strong>Currency of law:</strong> Check that cited provisions are <em>current</em> (e.g., expired temporary COVID‑19 measures should not be treated as active).</li>
+        <li><strong>No guarantees:</strong> Avoid absolutes like “automatic,” “guaranteed,” “will obtain”; use qualified language subject to <em>facts, contract, and court discretion</em>.</li>
+        <li><strong>Existence &amp; accuracy:</strong> Verify any <em>contract clause</em> or <em>statute section</em> actually exists and is correctly titled/numbered.</li>
+        <li><strong>Factual checks:</strong> Validate key facts (e.g., arrears amount) before sending; correct AI arithmetic/assumptions.</li>
+        <li><strong>Specificity to contract:</strong> Cite the <em>exact clause</em> where relevant; otherwise cite the precise statute/section instead of “as per the law.”</li>
+        <li><strong>“Latest authority” claims:</strong> If asserting “latest,” confirm the <em>date</em> and <em>court level</em> (SGCA outranks SGHC) or avoid that claim.</li>
       </ul>
     </section>
+  <script>
+  (function () {
+    // Cache DOM nodes (scoped to clause)
+    const promptPre = document.querySelector('section.card h2 + pre.pre.small');
+    const letterPre  = document.getElementById('letterOutput');
+    const hintDetails = document.querySelector('section.card details.hint');
+    const hintSummary = hintDetails ? hintDetails.querySelector('summary') : null;
+    const feedback = document.getElementById('clauseFeedback');
+    const risk = document.getElementById('clauseRisk');
+    const form = document.querySelector('form.mcq[data-module="clause"]');
+    const options = Array.from(form.querySelectorAll('.mcq-option'));
+    const nextBtn = document.getElementById('nextClauseBtn');
+    // Heading for MCQ
+    const questionHeading = form ? form.closest('section.card').querySelector('h2') : null;
+    // Cache risk panel nodes for clearing
+    const badgeEl = document.getElementById('clauseBadge');
+    const sumList = document.getElementById('clauseRiskSummary');
+    const piiList = document.getElementById('clausePII');
+    const hallList = document.getElementById('clauseHallucination');
+
+    // Clause-focused scenarios (factual inaccuracies, outdated/foreign refs, guarantees, PII, hallucinated clauses)
+    const scenarios = [
+      // 1) PII + guarantee + wrong arrears (Correct: B)
+      {
+        question: 'What mistake did the AI most likely make?',
+        prompt: [
+          'Draft a Singapore-law compliant clause letter about unpaid rent that cites the correct contract clause and/or current statute.',
+          'Avoid personal identifiers. Use measured language.'
+        ].join('\n'),
+        letter: [
+          'Dear Mr. Tan (NRIC: S1234567A),',
+          '',
+          'As per the Landlord and Tenant Act 1954, you must pay overdue rent of S$7,500 immediately (actual arrears are S$5,000).',
+          'We hereby absolutely terminate your tenancy without exception if payment is not received within 7 days.',
+          '',
+          'Yours sincerely,',
+          'Landlord'
+        ].join('\n'),
+        hint: 'Unredacted PII, outdated statute title, over‑definitive language, and fact error (amount).',
+        options: [
+          'A) It verifies the clause and cites current law cautiously.',
+          'B) It exposes PII, misstates arrears, and uses guarantees.',
+          'C) It neutrally outlines options subject to court discretion.',
+          'D) It provides only the relevant contract clause without statute.'
+        ],
+        correct: 'B',
+        risks: {
+          badge: 'High',
+          summary: [
+            'Unredacted PII exposed (NRIC; identity risk).',
+            'Over‑definitive promise (“absolutely terminate without exception”).',
+            'Factual mismatch in arrears (S$7,500 vs S$5,000).'
+          ],
+          pii: [
+            'Remove NRIC and replace with redacted placeholder.',
+            'Avoid publishing unit/address/phone/email unless necessary and consented.'
+          ],
+          hallucination: [
+            'Check statute title/currency (avoid “Landlord and Tenant Act 1954” as binding in SG).',
+            'Verify arrears amount against ledger before sending.'
+          ]
+        }
+      },
+      // 2) Hallucinated contract clause (Correct: D)
+      {
+        question: 'What possible contract clause issue is present?',
+        prompt: [
+          'Write a letter invoking the repair obligations under the Tenancy Agreement.',
+          'If you cite a clause, ensure it exists and is correctly numbered.'
+        ].join('\n'),
+        letter: [
+          'Dear Tenant,',
+          '',
+          'Under Clause 18.7 of your Tenancy Agreement, you must replace the air‑conditioning within 24 hours.',
+          'Please confirm completion by tomorrow.',
+          '',
+          'Sincerely,',
+          'Landlord'
+        ].join('\n'),
+        hint: 'Clause numbers can be hallucinated; verify against the contract.',
+        options: [
+          'A) It correctly references BMSMA provisions.',
+          'B) It refrains from any legal reference.',
+          'C) It provides a reasonable timeline only.',
+          'D) It appears to invent a contract clause number that may not exist.'
+        ],
+        correct: 'D',
+        risks: {
+          badge: 'Medium',
+          summary: [
+            'Possible hallucinated clause number (“Clause 18.7”).',
+            'Timeline may be unrealistic for major repairs.'
+          ],
+          pii: [
+            'No PII in this draft — keep it that way.'
+          ],
+          hallucination: [
+            'Open the TA and verify clause numbering/wording.',
+            'Align deadlines with the contract and reasonableness.'
+          ]
+        }
+      },
+      // 3) Foreign law misuse (Correct: A)
+      {
+        question: 'Why is this AI‑generated demand letter problematic?',
+        prompt: [
+          'Draft a demand letter for repairs citing applicable authority.',
+          'Avoid foreign or outdated law.'
+        ].join('\n'),
+        letter: [
+          'Dear Tenant,',
+          '',
+          'Per Section 14 of the UK Landlord and Tenant Act 1985, you are strictly liable to repair immediately.',
+          'Please fix the issues within 7 days.',
+          '',
+          'Sincerely,',
+          'Landlord'
+        ].join('\n'),
+        hint: 'Check jurisdiction — UK statute vs Singapore contract/statutes.',
+        options: [
+          'A) It relies on a UK statute that is not binding in Singapore.',
+          'B) It avoids PII flawlessly.',
+          'C) It uses cautious language throughout.',
+          'D) It correctly cites the exact Singapore clause only.'
+        ],
+        correct: 'A',
+        risks: {
+          badge: 'Medium',
+          summary: [
+            'Relies on UK statute as if binding in Singapore.',
+            'Over‑definitive “strictly liable” phrasing.'
+          ],
+          pii: [
+            'No PII present.'
+          ],
+          hallucination: [
+            'Replace with the relevant Singapore clause/statute or cite the contract.',
+            'Qualify obligations (may/must subject to clause/Act).'
+          ]
+        }
+      },
+      // 4) Outdated temporary legislation (Correct: C)
+      {
+        question: 'What is the flaw in citing legislation here?',
+        prompt: [
+          'Draft a payment relief letter referencing statutory relief if any remains in force.'
+        ].join('\n'),
+        letter: [
+          'Dear Tenant,',
+          '',
+          'You remain eligible for relief under Part 2 of the COVID‑19 (Temporary Measures) Act for rental waivers.',
+          'Please apply by completing the attached form.',
+          '',
+          'Sincerely,',
+          'Landlord'
+        ].join('\n'),
+        hint: 'Consider whether the cited temporary relief remains in force.',
+        options: [
+          'A) It uses conditional phrasing.',
+          'B) It avoids PII entirely.',
+          'C) It cites temporary provisions that may have expired/ceased.',
+          'D) It limits itself to contract remedies only.'
+        ],
+        correct: 'C',
+        risks: {
+          badge: 'Medium',
+          summary: [
+            'Cites temporary COVID‑19 relief that may have expired.',
+            'Misleads tenant about eligibility.'
+          ],
+          pii: [
+            'No PII present.'
+          ],
+          hallucination: [
+            'Confirm whether any relief is still in force; if not, remove.',
+            'Offer contract‑based alternatives if statute is expired.'
+          ]
+        }
+      },
+      // 5) Over‑definitive promises (Correct: A)
+      {
+        question: 'Which drafting issue stands out in this notice?',
+        prompt: [
+          'Draft a late‑payment notice using measured language; do not guarantee outcomes.'
+        ].join('\n'),
+        letter: [
+          'Dear Tenant,',
+          '',
+          'This notice serves as breach for persistent late payment.',
+          'We will obtain a court order for possession and costs next week.',
+          '',
+          'Sincerely,',
+          'Property Manager'
+        ].join('\n'),
+        hint: 'Absolute predictions about litigation outcomes are risky.',
+        options: [
+          'A) It guarantees litigation outcomes (“We will obtain a court order”).',
+          'B) It avoids personal data.',
+          'C) It cites only the contract clause without statute.',
+          'D) It provides a reasonable compliance window.'
+        ],
+        correct: 'A',
+        risks: {
+          badge: 'High',
+          summary: [
+            'Guarantees litigation outcomes (“We will obtain a court order”).',
+            'May be construed as threatening/overreaching.'
+          ],
+          pii: [
+            'No PII present.'
+          ],
+          hallucination: [
+            'Use conditional language; outcomes depend on facts and court discretion.',
+            'Offer compliant timelines and cure options per contract.'
+          ]
+        }
+      },
+      // 6) Outdated/incorrect statute title (Correct: D)
+      {
+        question: 'Which legal reference error did the AI commit?',
+        prompt: [
+          'Draft a clause‑based payment demand and cite applicable Singapore law if needed.',
+          'Ensure the law title/section is correct and current.'
+        ].join('\n'),
+        letter: [
+          'Dear Tenant,',
+          '',
+          'Under the Tenancies and Property Act 1970 s 21(4), you must vacate within 7 days.',
+          'Please arrange handover with our office.',
+          '',
+          'Regards,',
+          'Property Manager'
+        ].join('\n'),
+        hint: 'Check that the named Act/section actually exists for Singapore tenancy law.',
+        options: [
+          'A) It correctly cites present‑day Singapore tenancy legislation.',
+          'B) It uses absolute language (“guarantee”) about outcomes.',
+          'C) It redacts all sensitive details appropriately.',
+          'D) It cites a non‑existent or wrong‑jurisdiction statute for Singapore.'
+        ],
+        correct: 'D',
+        risks: {
+          badge: 'Medium',
+          summary: [
+            'Cites a non‑existent/wrong‑jurisdiction statute (“Tenancies and Property Act 1970”).',
+            'Risk of legal inaccuracy undermining credibility.'
+          ],
+          pii: [
+            'No PII present.'
+          ],
+          hallucination: [
+            'Verify statute name/section; cite correct SG source or contract clause.',
+            'Avoid stating deadlines not grounded in law/contract.'
+          ]
+        }
+      }
+    ];
+
+    // Expose scenarios for risk handler
+    window.__clauseScenarios = scenarios;
+
+    let idx = 0;
+    window.__clauseIdx = idx;
+
+    function render(i) {
+      const sc = scenarios[i];
+      // Update MCQ heading
+      if (questionHeading) questionHeading.textContent = sc.question;
+      // Update prompt and letter
+      if (promptPre) promptPre.textContent = sc.prompt;
+      if (letterPre) letterPre.textContent = sc.letter;
+      if (hintDetails) {
+        if (hintSummary) {
+          hintDetails.innerHTML = '';
+          hintDetails.appendChild(hintSummary);
+          const text = document.createTextNode(' ' + sc.hint);
+          hintDetails.appendChild(text);
+        }
+      }
+      // Update options
+      options.forEach((label, j) => {
+        const input = label.querySelector('input[type="radio"]');
+        if (input) { input.checked = false; input.setAttribute('aria-checked', 'false'); }
+        const textNode = label.childNodes[label.childNodes.length - 1];
+        if (textNode && textNode.nodeType === Node.TEXT_NODE) {
+          textNode.nodeValue = ' ' + sc.options[j];
+        } else {
+          label.innerHTML = label.querySelector('input').outerHTML + ' ' + sc.options[j];
+        }
+      });
+      // Store correct answer for grader
+      form.dataset.correct = sc.correct;
+      // Reset feedback & risk panels
+      if (feedback) feedback.textContent = '';
+      if (risk) risk.hidden = true;
+      // Clear risk panel lists and badge
+      if (badgeEl) badgeEl.textContent = '–';
+      if (sumList) sumList.innerHTML = '';
+      if (piiList) piiList.innerHTML = '';
+      if (hallList) hallList.innerHTML = '';
+      // Focus first radio
+      const firstRadio = form.querySelector('input[type="radio"]');
+      if (firstRadio) firstRadio.focus({ preventScroll: false });
+    }
+
+    // Strict grading using per‑scenario key; block legacy handlers
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      const selected = form.querySelector('input[type="radio"]:checked');
+      const key = (form.dataset.correct || '').trim();
+      const ok = !!selected && (!!key ? selected.value === key : false);
+      if (feedback) {
+        feedback.textContent = ok
+          ? '✅ Correct'
+          : '❌ Not quite — try again or open Risk Coaching.';
+      }
+    }, true);
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', function () {
+        idx = (idx + 1) % scenarios.length;
+        window.__clauseIdx = idx;
+        render(idx);
+        if (feedback) feedback.setAttribute('aria-live', 'polite');
+      });
+    }
+
+    // Initial render
+    render(idx);
+  })();
+  </script>
+  <script>
+    (function () {
+      const btn = document.querySelector('form.mcq[data-module="clause"] [data-show-analysis]');
+      const riskEl = document.getElementById('clauseRisk');
+      const badgeEl = document.getElementById('clauseBadge');
+      const sumList = document.getElementById('clauseRiskSummary');
+      const piiList = document.getElementById('clausePII');
+      const hallList = document.getElementById('clauseHallucination');
+      if (!btn || !riskEl) return;
+      function fill(listEl, items) {
+        if (!listEl) return;
+        listEl.innerHTML = '';
+        items.forEach(t => {
+          const li = document.createElement('li');
+          li.textContent = t;
+          listEl.appendChild(li);
+        });
+      }
+      btn.addEventListener('click', function () {
+        // Use the same idx/scenarios from the main IIFE (exposed via window)
+        const i = window.__clauseIdx || 0;
+        const sc = (window.__clauseScenarios || [])[i];
+        if (!sc || !sc.risks) { riskEl.hidden = false; return; }
+        if (badgeEl) { badgeEl.textContent = sc.risks.badge || '–'; }
+        fill(sumList, sc.risks.summary || []);
+        fill(piiList, sc.risks.pii || []);
+        fill(hallList, sc.risks.hallucination || []);
+        riskEl.hidden = false;
+      });
+    })();
+  </script>
   </main>
+    <footer class="site-footer">
+      <p>Educational prototype. Not legal advice. Consult a qualified lawyer.</p>
+    </footer>
+</body>
+<script src="scripts/app.js" defer></script>
+</html>
