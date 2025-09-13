@@ -184,7 +184,23 @@ Landlord
           'D) It relied on up‑to-date Singapore tenancy law without errors.'
         ],
         correct: 'B',
-        question: 'What mistake did the AI most likely make?'
+        question: 'What mistake did the AI most likely make?',
+        risks: {
+          badge: 'High',
+          summary: [
+            'Unredacted PII exposed (NRIC; identity risk).',
+            'Over‑definitive promise (“without exception”).',
+            'References potentially outdated/wrong‑jurisdiction statute.'
+          ],
+          pii: [
+            'Remove NRIC; use redacted placeholder.',
+            'Avoid listing unit/address, phone, email unless necessary/consented.'
+          ],
+          hallucination: [
+            'Verify statute title/section and current force in Singapore.',
+            'Use contract clause if statute is inapplicable.'
+          ]
+        }
       },
       // 2) Hallucinated/incorrect statute (Correct: D)
       {
@@ -211,7 +227,20 @@ Landlord
           'D) It cites a non-existent or wrong-jurisdiction statute for Singapore.'
         ],
         correct: 'D',
-        question: 'Which legal reference error did the AI commit?'
+        question: 'Which legal reference error did the AI commit?',
+        risks: {
+          badge: 'Medium',
+          summary: [
+            'Cites non‑existent/wrong‑jurisdiction statute for Singapore tenancy.',
+            'May mislead tenant on legal basis for eviction timeline.'
+          ],
+          pii: [
+            'No PII displayed — keep it that way.'
+          ],
+          hallucination: [
+            'Cross‑check statute name/section; cite correct SG source or contract clause.'
+          ]
+        }
       },
       // 3) Foreign law misuse (Correct: A) — PII removed to keep single-issue clarity
       {
@@ -236,7 +265,21 @@ Landlord
           'D) It properly cites the Singapore contract clause only.'
         ],
         correct: 'A',
-        question: 'Why is this AI‑generated demand letter problematic?'
+        question: 'Why is this AI‑generated demand letter problematic?',
+        risks: {
+          badge: 'Medium',
+          summary: [
+            'Relies on UK statute as if binding in Singapore.',
+            'Uses strong liability language that may be overstated.'
+          ],
+          pii: [
+            'No PII present.'
+          ],
+          hallucination: [
+            'Replace with relevant Singapore clause/statute or cite the contract.',
+            'Prefer cautious phrasing (may/subject to clause).' 
+          ]
+        }
       },
       // 4) Outdated temporary legislation (Correct: C)
       {
@@ -261,7 +304,21 @@ Landlord
           'D) It limits itself to contract-based remedies without statutory references.'
         ],
         correct: 'C',
-        question: 'What is the flaw in citing legislation here?'
+        question: 'What is the flaw in citing legislation here?',
+        risks: {
+          badge: 'Medium',
+          summary: [
+            'Cites temporary COVID‑19 relief that may have expired.',
+            'Risk of giving incorrect eligibility guidance.'
+          ],
+          pii: [
+            'No PII present.'
+          ],
+          hallucination: [
+            'Confirm whether relief remains in force; if not, remove.',
+            'Offer contract‑based alternatives if statute is expired.'
+          ]
+        }
       },
       // 5) Over‑definitive promises (Correct: A)
       {
@@ -286,7 +343,21 @@ Landlord
           'D) It provides a reasonable compliance window.'
         ],
         correct: 'A',
-        question: 'Which drafting issue stands out in this notice?'
+        question: 'Which drafting issue stands out in this notice?',
+        risks: {
+          badge: 'High',
+          summary: [
+            'Guarantees litigation outcome (“We will obtain a court order”).',
+            'May be construed as threatening/overreaching.'
+          ],
+          pii: [
+            'No PII present.'
+          ],
+          hallucination: [
+            'Use conditional language; outcomes depend on facts and court discretion.',
+            'Provide compliant timelines/cure options per contract.'
+          ]
+        }
       },
       // 6) Hallucinated contract clause (Correct: D)
       {
@@ -311,11 +382,27 @@ Landlord
           'D) It appears to invent a contract clause number that may not exist (hallucination).'
         ],
         correct: 'D',
-        question: 'What possible contract clause issue is present?'
+        question: 'What possible contract clause issue is present?',
+        risks: {
+          badge: 'Medium',
+          summary: [
+            'Appears to invent a contract clause number that may not exist.',
+            'Creates enforcement risk if relied on.'
+          ],
+          pii: [
+            'No PII present.'
+          ],
+          hallucination: [
+            'Open the Tenancy Agreement and verify clause numbering/wording.',
+            'Align deadlines with the contract and reasonableness.'
+          ]
+        }
       }
     ];
+    window.__letterScenarios = scenarios;
 
     let idx = 0;
+    window.__letterIdx = idx;
 
     function render(i) {
       const sc = scenarios[i];
@@ -355,7 +442,10 @@ Landlord
       if (progressText) progressText.textContent = `Question ${i + 1} of ${scenarios.length}`;
       if (progressFill) progressFill.style.width = `${Math.round((i / scenarios.length) * 100)}%`;
       // Reset risk coaching when switching questions
-      if (badgeEl) badgeEl.textContent = '–';
+      if (badgeEl) {
+        badgeEl.textContent = '–';
+        badgeEl.className = 'badge'; // reset to base class, removes colour styling
+      }
       if (riskSummaryList) riskSummaryList.innerHTML = '';
       if (piiList) piiList.innerHTML = '';
       if (hallucinationList) hallucinationList.innerHTML = '';
@@ -380,12 +470,43 @@ Landlord
       }
     }, true);
 
+    // Show Risk Coaching: populate from current scenario risks
+    const showBtn = form.querySelector('[data-show-analysis]');
+    function fillList(ul, items) {
+      if (!ul) return;
+      ul.innerHTML = '';
+      (items || []).forEach(t => {
+        const li = document.createElement('li');
+        li.textContent = t;
+        ul.appendChild(li);
+      });
+    }
+    if (showBtn) {
+      showBtn.addEventListener('click', function () {
+        const sc = window.__letterScenarios ? window.__letterScenarios[window.__letterIdx] : scenarios[idx];
+        if (!sc || !sc.risks) { if (risk) risk.hidden = false; return; }
+        if (badgeEl) {
+          badgeEl.textContent = sc.risks.badge || '–';
+          // Optional colour: add class based on badge severity
+          badgeEl.className = 'badge ' + ((sc.risks.badge === 'High') ? 'warn' : 'info');
+        }
+        fillList(riskSummaryList, sc.risks.summary);
+        fillList(piiList, sc.risks.pii);
+        fillList(hallucinationList, sc.risks.hallucination);
+        if (risk) risk.hidden = false;
+      });
+    }
+
     if (nextBtn) {
       nextBtn.addEventListener('click', function () {
         idx = (idx + 1) % scenarios.length;
+        window.__letterIdx = idx;
         render(idx);
         // Ensure previous risk panel does not persist to next question
-        if (badgeEl) badgeEl.textContent = '–';
+        if (badgeEl) {
+          badgeEl.textContent = '–';
+          badgeEl.className = 'badge';
+        }
         if (riskSummaryList) riskSummaryList.innerHTML = '';
         if (piiList) piiList.innerHTML = '';
         if (hallucinationList) hallucinationList.innerHTML = '';

@@ -132,6 +132,10 @@ It lists the tenant’s full NRIC (S1234567A), unit number and phone for contact
     const form = document.querySelector('form.mcq[data-module="summary"]');
     const options = Array.from(form.querySelectorAll('.mcq-option'));
     const nextBtn = document.getElementById('nextSummaryBtn');
+    const badgeEl = document.getElementById('summaryBadge');
+    const riskSummaryList = document.getElementById('summaryRiskSummary');
+    const piiList = document.getElementById('summaryPII');
+    const hallucinationList = document.getElementById('summaryHallucination');
     // Heading for this MCQ card
     const questionHeading = form ? form.closest('section.card').querySelector('h2') : null;
 
@@ -155,7 +159,20 @@ It lists the tenant’s full NRIC (S1234567A), unit number and phone for contact
         'C) It cautiously qualifies conclusions and cites current law precisely.',
         'D) It cites a current, correct Singapore statute with the right section.'
       ],
-      correct: 'B'
+      correct: 'B',
+      risks: {
+        badge: 'High',
+        summary: [
+          'Unredacted PII (NRIC, unit, phone) included.',
+          'Guarantees outcome without exception.'
+        ],
+        pii: [
+          'Redact identifiers (NRIC, address, phone).'
+        ],
+        hallucination: [
+          'Verify statute currency (Landlord and Tenant Act is outdated).'
+        ]
+      }
     },
     // 2) Non‑existent / incorrect statute (Correct: D)
     {
@@ -175,7 +192,19 @@ It lists the tenant’s full NRIC (S1234567A), unit number and phone for contact
         'C) It redacts employee identifiers and avoids PII.',
         'D) It cites a non‑existent or wrong statute (“Employment Law Act 2010”) while asserting universal rules.'
       ],
-      correct: 'D'
+      correct: 'D',
+      risks: {
+        badge: 'Medium',
+        summary: [
+          'Cites non-existent Employment Law Act 2010.',
+          'Asserts termination rules apply “in all cases.”'
+        ],
+        pii: [],
+        hallucination: [
+          'Check statute existence; cite Employment Act correctly.',
+          'Avoid universal claims.'
+        ]
+      }
     },
     // 3) Over‑definitive outcomes (Correct: A)
     {
@@ -195,7 +224,18 @@ It lists the tenant’s full NRIC (S1234567A), unit number and phone for contact
         'C) It cites only the contract clause cautiously.',
         'D) It neutrally sets out potential remedies subject to court discretion.'
       ],
-      correct: 'A'
+      correct: 'A',
+      risks: {
+        badge: 'High',
+        summary: [
+          'Guarantees litigation outcomes as automatic.',
+          'Overstates remedies.'
+        ],
+        pii: [],
+        hallucination: [
+          'Use conditional language; outcomes depend on facts and court.'
+        ]
+      }
     },
     // 4) Outdated / wrong‑jurisdiction reference (Correct: C)
     {
@@ -215,7 +255,17 @@ It lists the tenant’s full NRIC (S1234567A), unit number and phone for contact
         'C) It cites foreign (UK) legislation as if binding in Singapore.',
         'D) It provides a relevant Singapore contract clause reference only.'
       ],
-      correct: 'C'
+      correct: 'C',
+      risks: {
+        badge: 'Medium',
+        summary: [
+          'Relies on UK law as if binding in Singapore.'
+        ],
+        pii: [],
+        hallucination: [
+          'Replace UK statute with relevant Singapore law or contract clause.'
+        ]
+      }
     },
     // 5) Outdated case claimed as latest (Correct: B)
     {
@@ -235,7 +285,17 @@ It lists the tenant’s full NRIC (S1234567A), unit number and phone for contact
         'C) It avoids absolute phrasing entirely.',
         'D) It lists jurisdiction as Singapore correctly.'
       ],
-      correct: 'B'
+      correct: 'B',
+      risks: {
+        badge: 'Medium',
+        summary: [
+          'Treats 2012 HC case as latest in 2025.'
+        ],
+        pii: [],
+        hallucination: [
+          'Check date and level; cite recent SGCA authority instead.'
+        ]
+      }
     },
     // 6) Factual inaccuracy about deposits (Correct: D)
     {
@@ -255,7 +315,18 @@ It lists the tenant’s full NRIC (S1234567A), unit number and phone for contact
         'C) It provides a case citation supporting automatic forfeiture in all cases.',
         'D) It incorrectly states deposit forfeiture is always automatic and unreviewable.'
       ],
-      correct: 'D'
+      correct: 'D',
+      risks: {
+        badge: 'High',
+        summary: [
+          'States deposit forfeiture is always automatic.',
+          'Ignores review by court/contract terms.'
+        ],
+        pii: [],
+        hallucination: [
+          'Confirm forfeiture rules; courts may review and depend on agreement.'
+        ]
+      }
     }
   ];
 
@@ -295,6 +366,11 @@ It lists the tenant’s full NRIC (S1234567A), unit number and phone for contact
       // Reset feedback & risk panes
       if (feedback) feedback.textContent = '';
       if (risk) risk.hidden = true;
+      // Reset risk coaching UI
+      if (badgeEl) { badgeEl.textContent = '–'; badgeEl.className = 'badge'; }
+      if (riskSummaryList) riskSummaryList.innerHTML = '';
+      if (piiList) piiList.innerHTML = '';
+      if (hallucinationList) hallucinationList.innerHTML = '';
       // Focus first radio
       const firstRadio = form.querySelector('input[type="radio"]');
       if (firstRadio) firstRadio.focus({ preventScroll: false });
@@ -319,6 +395,37 @@ It lists the tenant’s full NRIC (S1234567A), unit number and phone for contact
         idx = (idx + 1) % scenarios.length;
         render(idx);
         if (feedback) feedback.setAttribute('aria-live', 'polite');
+        if (badgeEl) { badgeEl.textContent = '–'; badgeEl.className = 'badge'; }
+        if (riskSummaryList) riskSummaryList.innerHTML = '';
+        if (piiList) piiList.innerHTML = '';
+        if (hallucinationList) hallucinationList.innerHTML = '';
+        if (risk) risk.hidden = true;
+      });
+    }
+
+    // Show Risk Coaching: populate from current scenario risks
+    const showBtn = form.querySelector('[data-show-analysis]');
+    function fillList(ul, items) {
+      if (!ul) return;
+      ul.innerHTML = '';
+      (items || []).forEach(t => {
+        const li = document.createElement('li');
+        li.textContent = t;
+        ul.appendChild(li);
+      });
+    }
+    if (showBtn) {
+      showBtn.addEventListener('click', function () {
+        const sc = scenarios[idx];
+        if (!sc || !sc.risks) { if (risk) risk.hidden = false; return; }
+        if (badgeEl) {
+          badgeEl.textContent = sc.risks.badge || '–';
+          badgeEl.className = 'badge ' + ((sc.risks.badge === 'High') ? 'warn' : 'info');
+        }
+        fillList(riskSummaryList, sc.risks.summary);
+        fillList(piiList, sc.risks.pii);
+        fillList(hallucinationList, sc.risks.hallucination);
+        if (risk) risk.hidden = false;
       });
     }
 
