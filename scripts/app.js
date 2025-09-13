@@ -279,3 +279,35 @@ document.querySelectorAll("form.mcq").forEach(form => {
     });
   }
 });
+
+async function callDeepseek(prompt) {
+  const res = await fetch("/api/deepseek", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt })
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    const msg = err?.error?.message || JSON.stringify(err) || `HTTP ${res.status}`;
+    throw new Error(msg);
+  }
+  const data = await res.json();
+  return data.answer || "";
+}
+
+if (genBtn && outputEl) {
+  genBtn.addEventListener("click", async () => {
+    const userPrompt = promptEl?.value || "";
+    outputEl.textContent = "Thinking…";
+
+    try {
+      const answer = await callDeepseek(userPrompt);
+      outputEl.textContent = answer;
+
+      const analysis = analyze(`${userPrompt}\n\n${answer}`);
+      // keep your existing risk panel rendering here
+    } catch (e) {
+      outputEl.textContent = `Error: ${e.message}`;
+    }
+  });
+}
