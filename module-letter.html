@@ -29,8 +29,9 @@
     <section class="card">
       <h2>Prompt used</h2>
       <pre class="pre small" aria-label="Prompt example">
-Draft a tenancy termination letter for a residential lease in Singapore. 
-Cite any relevant statute or clause if needed. Avoid including personal identifiers.
+Draft a tenancy termination letter for a residential lease in Singapore.
+Cite only current and applicable statutes or the relevant contract clause.
+Avoid including or revealing any personal identifiers (names, NRIC/FIN, email, phone, unit numbers).
       </pre>
     </section>
 
@@ -39,11 +40,13 @@ Cite any relevant statute or clause if needed. Avoid including personal identifi
       <pre class="pre" id="letterOutput" aria-live="polite">
 Dear Sir/Madam,
 
-This letter provides notice of termination of the Tenancy Agreement for 12 Sample Avenue, Singapore 123456.
-As per the law, the tenancy will end on 30 November 2025.
+To: Ms Lim Mei Yun (NRIC: S1234567A), 12-34 Sunrise Residences, #10-08, Singapore 567890
+Email: lim.meiyun@example.com | Phone: +65 9123 4567
 
-The landlord guarantees the return of the full security deposit within 7 days.
-Please contact the undersigned at john.doe@example.com for coordination.
+This letter gives notice that your tenancy is terminated with effect from 1 October 2025.
+Pursuant to the Landlord and Tenant Act (Cap. 158, 1954), Section 34(2), the landlord guarantees vacant possession on that date without exception.
+
+Kindly hand over the keys by 5:00 PM on 1 October 2025.
 
 Sincerely,
 Landlord
@@ -51,7 +54,7 @@ Landlord
 
       <details class="hint">
         <summary>Need a hint?</summary>
-        Look for vague legal references, absolute language, and potential PII.
+        Watch for (1) unredacted PII, (2) outdated or wrong-jurisdiction statutes, and (3) overly definitive promises such as “guarantees” or “without exception.”
       </details>
     </section>
 
@@ -61,24 +64,25 @@ Landlord
       <form class="mcq" data-module="letter" aria-label="Multiple choice question: pick one">
         <label class="mcq-option">
           <input type="radio" name="q1" value="A" />
-          A) It cited “Section 14(2) of the XYZ Act (2020)” which does not exist.
+          A) It cited the correct and current statute with precise section numbers.
         </label>
         <label class="mcq-option">
           <input type="radio" name="q1" value="B" />
-          B) It used vague legal reference “As per the law” without specifying statute/section.
+          B) It revealed confidential personal identifiers (NRIC, unit, email, phone) that should have been redacted.
         </label>
         <label class="mcq-option">
           <input type="radio" name="q1" value="C" />
-          C) It avoided all personal data and did not include contact info.
+          C) It used cautious, qualified language avoiding guarantees.
         </label>
         <label class="mcq-option">
           <input type="radio" name="q1" value="D" />
-          D) It used cautious language without guarantees.
+          D) It relied on up‑to-date Singapore tenancy law without errors.
         </label>
 
         <div class="actions">
           <button class="btn" type="submit">Check Answer</button>
           <button class="btn btn-secondary" type="button" data-show-analysis>Show Risk Coaching</button>
+          <button class="btn btn-tertiary" type="button" id="nextQuestionBtn" aria-controls="main">Next Question ▶</button>
         </div>
       </form>
 
@@ -114,6 +118,243 @@ Landlord
     <p>Educational prototype. Not legal advice. Consult a qualified lawyer.</p>
   </footer>
 
+</body>
   <script src="scripts/app.js" defer></script>
+  <script>
+  (function () {
+    // Cache DOM nodes (keep original IDs so existing scripts keep working)
+    const promptPre = document.querySelector('section.card h2 + pre.pre.small');
+    const letterPre  = document.getElementById('letterOutput');
+    const hintDetails = document.querySelector('section.card details.hint');
+    const hintSummary = hintDetails ? hintDetails.querySelector('summary') : null;
+    const feedback = document.getElementById('letterFeedback');
+    const risk = document.getElementById('letterRisk');
+    const form = document.querySelector('form.mcq[data-module="letter"]');
+    const options = Array.from(form.querySelectorAll('.mcq-option'));
+    const nextBtn = document.getElementById('nextQuestionBtn');
+
+    // Define scenarios (focus: factual inaccuracies, outdated refs, over-definitive statements, PII exposure)
+    const scenarios = [
+      // 1) PII exposure (Correct: B)
+      {
+        prompt: [
+          'Draft a tenancy termination letter for a residential lease in Singapore.',
+          'Cite only current and applicable statutes or the relevant contract clause.',
+          'Avoid including or revealing any personal identifiers (names, NRIC/FIN, email, phone, unit numbers).'
+        ].join('\n'),
+        letter: [
+          'Dear Sir/Madam,',
+          '',
+          'To: Ms Lim Mei Yun (NRIC: S1234567A), 12-34 Sunrise Residences, #10-08, Singapore 567890',
+          'Email: lim.meiyun@example.com | Phone: +65 9123 4567',
+          '',
+          'This letter gives notice that your tenancy is terminated with effect from 1 October 2025.',
+          'Pursuant to the Landlord and Tenant Act (Cap. 158, 1954), Section 34(2), the landlord guarantees vacant possession on that date without exception.',
+          '',
+          'Kindly hand over the keys by 5:00 PM on 1 October 2025.',
+          '',
+          'Sincerely,',
+          'Landlord'
+        ].join('\n'),
+        hint: 'Watch for (1) unredacted PII, (2) outdated or wrong-jurisdiction statutes, and (3) overly definitive promises.',
+        options: [
+          'A) It cited the correct and current statute with precise section numbers.',
+          'B) It revealed confidential personal identifiers (NRIC, unit, email, phone) that should have been redacted.',
+          'C) It used cautious, qualified language avoiding guarantees.',
+          'D) It relied on up‑to-date Singapore tenancy law without errors.'
+        ],
+        correct: 'B'
+      },
+      // 2) Hallucinated/incorrect statute (Correct: D)
+      {
+        prompt: [
+          'Draft an eviction notice for rental arrears in Singapore.',
+          'Cite either the correct contract clause or applicable Singapore law.',
+          'Do not include personal identifiers; keep the tone professional and non-definitive.'
+        ].join('\n'),
+        letter: [
+          'Dear Tenant,',
+          '',
+          'This notice concerns non-payment of rent for the premises at 45 Market Street, Singapore.',
+          'Under the Tenancies and Property Act 1970 s 21(4), you must vacate within 7 days.',
+          'Please arrange handover with our office.',
+          '',
+          'Regards,',
+          'Property Manager'
+        ].join('\n'),
+        hint: 'Look for hallucinated or outdated statutes (wrong title/section).',
+        options: [
+          'A) It correctly cites present-day Singapore tenancy legislation.',
+          'B) It uses absolute language (“guarantee”) about an uncertain legal outcome.',
+          'C) It redacts all personal and sensitive details appropriately.',
+          'D) It cites a non-existent or wrong-jurisdiction statute for Singapore.'
+        ],
+        correct: 'D'
+      },
+      // 3) Foreign law misuse (Correct: A) — PII removed to keep single-issue clarity
+      {
+        prompt: [
+          'Draft a landlord demand letter reminding a tenant of repairs obligations under the lease.',
+          'Avoid citing foreign or outdated authorities. Prefer cautious language (“may”, “subject to”).'
+        ].join('\n'),
+        letter: [
+          'Dear Tenant,',
+          '',
+          'Per Section 14 of the UK Landlord and Tenant Act 1985, you are strictly liable to repair immediately.',
+          'Please fix the issues within 7 days.',
+          '',
+          'Sincerely,',
+          'Landlord'
+        ].join('\n'),
+        hint: 'Watch for foreign-jurisdiction citation (UK) that does not apply in Singapore.',
+        options: [
+          'A) It relies on a UK statute not applicable to Singapore.',
+          'B) It perfectly avoids any PII.',
+          'C) It cautiously avoids guaranteeing outcomes.',
+          'D) It properly cites the Singapore contract clause only.'
+        ],
+        correct: 'A'
+      },
+      // 4) Outdated temporary legislation (Correct: C)
+      {
+        prompt: [
+          'Draft a rent relief reminder for a commercial tenant in Singapore.',
+          'Ensure any legislation referenced is currently in force.'
+        ].join('\n'),
+        letter: [
+          'Dear Tenant,',
+          '',
+          'You remain eligible for relief under Part 2 of the COVID‑19 (Temporary Measures) Act, which is currently in force for rental waivers.',
+          'Please apply by completing the attached form.',
+          '',
+          'Sincerely,',
+          'Landlord'
+        ].join('\n'),
+        hint: 'Check whether temporary COVID‑19 relief provisions are still active.',
+        options: [
+          'A) It uses cautious and conditional phrasing.',
+          'B) It avoids personal identifiers entirely.',
+          'C) It cites a temporary provision that has expired/ceased to apply.',
+          'D) It limits itself to contract-based remedies without statutory references.'
+        ],
+        correct: 'C'
+      },
+      // 5) Over‑definitive promises (Correct: A)
+      {
+        prompt: [
+          'Draft a notice of breach for late rent payment.',
+          'Use measured language and avoid guaranteeing litigation outcomes.'
+        ].join('\n'),
+        letter: [
+          'Dear Tenant,',
+          '',
+          'This letter serves as notice of breach for persistent late payment.',
+          'We will obtain a court order for possession and costs next week.',
+          '',
+          'Sincerely,',
+          'Property Manager'
+        ].join('\n'),
+        hint: 'Absolute predictions about litigation outcomes are risky.',
+        options: [
+          'A) It guarantees a litigation outcome (“We will obtain a court order”).',
+          'B) It avoids all personal data.',
+          'C) It cites only the contract clause without statute.',
+          'D) It provides a reasonable compliance window.'
+        ],
+        correct: 'A'
+      },
+      // 6) Hallucinated contract clause (Correct: D)
+      {
+        prompt: [
+          'Draft a reminder to comply with the repair obligations under the Tenancy Agreement.',
+          'If you cite a clause, ensure the clause exists in the provided contract.'
+        ].join('\n'),
+        letter: [
+          'Dear Tenant,',
+          '',
+          'Under Clause 18.7 of your Tenancy Agreement, you must replace the air‑conditioning within 24 hours.',
+          'Please confirm completion by tomorrow.',
+          '',
+          'Sincerely,',
+          'Landlord'
+        ].join('\n'),
+        hint: 'Be wary of fabricating clause numbers not verified in the provided contract.',
+        options: [
+          'A) It correctly references the Building Maintenance and Strata Management Act.',
+          'B) It refrains from using any legal references.',
+          'C) It provides an appropriate and realistic timeline.',
+          'D) It appears to invent a contract clause number that may not exist (hallucination).'
+        ],
+        correct: 'D'
+      }
+    ];
+
+    let idx = 0;
+
+    function render(i) {
+      const sc = scenarios[i];
+      // Update prompt and letter
+      if (promptPre) promptPre.textContent = sc.prompt;
+      if (letterPre) letterPre.textContent = sc.letter;
+      if (hintDetails) {
+        // keep summary label as-is; update body text after it
+        const nodes = Array.from(hintDetails.childNodes);
+        const bodyNode = nodes.find(n => n.nodeType === Node.TEXT_NODE || (n.nodeType === Node.ELEMENT_NODE && n.tagName !== 'SUMMARY'));
+        // Replace inner text after <summary> with hint string
+        // Simplest: set the hintDetails innerHTML preserving <summary>
+        if (hintSummary) {
+          hintDetails.innerHTML = '';
+          hintDetails.appendChild(hintSummary);
+          const text = document.createTextNode(' ' + sc.hint);
+          hintDetails.appendChild(text);
+        }
+      }
+      // Update options
+      options.forEach((label, j) => {
+        const input = label.querySelector('input[type="radio"]');
+        if (input) { input.checked = false; input.setAttribute('aria-checked', 'false'); }
+        const textNode = label.childNodes[label.childNodes.length - 1];
+        if (textNode && textNode.nodeType === Node.TEXT_NODE) {
+          textNode.nodeValue = ' ' + sc.options[j];
+        } else {
+          // fallback: set entire label text after input
+          label.innerHTML = label.querySelector('input').outerHTML + ' ' + sc.options[j];
+        }
+      });
+      // Stash correct answer for any custom logic; harmless if unused by existing scripts
+      form.dataset.correct = sc.correct;
+      // Reset feedback and risk panels
+      if (feedback) feedback.textContent = '';
+      if (risk) risk.hidden = true;
+      // Move focus for accessibility
+      form.querySelector('input[type="radio"]').focus({ preventScroll: false });
+    }
+
+    // Enhance submit to show basic correctness if existing script doesn't handle dynamic swaps
+    form.addEventListener('submit', function (e) {
+      // Let existing handler run first; then add a minimal fallback after the event loop
+      setTimeout(() => {
+        if (!form.dataset.correct) return;
+        const sel = form.querySelector('input[type="radio"]:checked');
+        if (sel && feedback && !feedback.textContent.trim()) {
+          const ok = sel.value === form.dataset.correct;
+          feedback.textContent = ok ? '✅ Correct' : '❌ Not quite — try again or open Risk Coaching.';
+        }
+      }, 0);
+    }, true);
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', function () {
+        idx = (idx + 1) % scenarios.length;
+        render(idx);
+        // Announce change
+        if (feedback) feedback.setAttribute('aria-live', 'polite');
+      });
+    }
+
+    // Initial render ensures dataset.correct is set for scenario 0
+    render(idx);
+  })();
+  </script>
 </body>
 </html>
