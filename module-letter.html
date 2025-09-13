@@ -132,6 +132,8 @@ Landlord
     const form = document.querySelector('form.mcq[data-module="letter"]');
     const options = Array.from(form.querySelectorAll('.mcq-option'));
     const nextBtn = document.getElementById('nextQuestionBtn');
+    // Grab the heading element for the MCQ card
+    const questionHeading = form ? form.closest('section.card').querySelector('h2') : null;
 
     // Define scenarios (focus: factual inaccuracies, outdated refs, over-definitive statements, PII exposure)
     const scenarios = [
@@ -163,7 +165,8 @@ Landlord
           'C) It used cautious, qualified language avoiding guarantees.',
           'D) It relied on up‑to-date Singapore tenancy law without errors.'
         ],
-        correct: 'B'
+        correct: 'B',
+        question: 'What mistake did the AI most likely make?'
       },
       // 2) Hallucinated/incorrect statute (Correct: D)
       {
@@ -189,7 +192,8 @@ Landlord
           'C) It redacts all personal and sensitive details appropriately.',
           'D) It cites a non-existent or wrong-jurisdiction statute for Singapore.'
         ],
-        correct: 'D'
+        correct: 'D',
+        question: 'Which legal reference error did the AI commit?'
       },
       // 3) Foreign law misuse (Correct: A) — PII removed to keep single-issue clarity
       {
@@ -213,7 +217,8 @@ Landlord
           'C) It cautiously avoids guaranteeing outcomes.',
           'D) It properly cites the Singapore contract clause only.'
         ],
-        correct: 'A'
+        correct: 'A',
+        question: 'Why is this AI‑generated demand letter problematic?'
       },
       // 4) Outdated temporary legislation (Correct: C)
       {
@@ -237,7 +242,8 @@ Landlord
           'C) It cites a temporary provision that has expired/ceased to apply.',
           'D) It limits itself to contract-based remedies without statutory references.'
         ],
-        correct: 'C'
+        correct: 'C',
+        question: 'What is the flaw in citing legislation here?'
       },
       // 5) Over‑definitive promises (Correct: A)
       {
@@ -261,7 +267,8 @@ Landlord
           'C) It cites only the contract clause without statute.',
           'D) It provides a reasonable compliance window.'
         ],
-        correct: 'A'
+        correct: 'A',
+        question: 'Which drafting issue stands out in this notice?'
       },
       // 6) Hallucinated contract clause (Correct: D)
       {
@@ -285,7 +292,8 @@ Landlord
           'C) It provides an appropriate and realistic timeline.',
           'D) It appears to invent a contract clause number that may not exist (hallucination).'
         ],
-        correct: 'D'
+        correct: 'D',
+        question: 'What possible contract clause issue is present?'
       }
     ];
 
@@ -293,6 +301,8 @@ Landlord
 
     function render(i) {
       const sc = scenarios[i];
+      // Update MCQ heading
+      if (questionHeading) questionHeading.textContent = sc.question;
       // Update prompt and letter
       if (promptPre) promptPre.textContent = sc.prompt;
       if (letterPre) letterPre.textContent = sc.letter;
@@ -330,17 +340,18 @@ Landlord
       form.querySelector('input[type="radio"]').focus({ preventScroll: false });
     }
 
-    // Enhance submit to show basic correctness if existing script doesn't handle dynamic swaps
+    // Grade strictly against the scenario key and block any legacy handlers
     form.addEventListener('submit', function (e) {
-      // Let existing handler run first; then add a minimal fallback after the event loop
-      setTimeout(() => {
-        if (!form.dataset.correct) return;
-        const sel = form.querySelector('input[type="radio"]:checked');
-        if (sel && feedback && !feedback.textContent.trim()) {
-          const ok = sel.value === form.dataset.correct;
-          feedback.textContent = ok ? '✅ Correct' : '❌ Not quite — try again or open Risk Coaching.';
-        }
-      }, 0);
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      const selected = form.querySelector('input[type="radio"]:checked');
+      const key = (form.dataset.correct || '').trim();
+      const ok = !!selected && (!!key ? selected.value === key : false);
+      if (feedback) {
+        feedback.textContent = ok
+          ? '✅ Correct'
+          : '❌ Not quite — try again or open Risk Coaching.';
+      }
     }, true);
 
     if (nextBtn) {
