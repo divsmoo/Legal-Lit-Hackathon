@@ -29,21 +29,21 @@
     <section class="card">
       <h2>Prompt used</h2>
       <pre class="pre small">
-Summarise the key holdings of a recent Singapore Court of Appeal decision on landlord-tenant disputes.
-Provide the case name, citation, and the year of decision.
+Summarise the key legal requirements for terminating a residential lease in Singapore based on an AI‑drafted termination letter. 
+Include whether the statute cited is current, avoid personal identifiers, and flag any guarantees about outcomes.
       </pre>
     </section>
 
     <section class="card">
       <h2>AI-Generated Summary (mock)</h2>
       <pre class="pre" id="summaryOutput">
-The court decided that landlords can always keep the full deposit when tenants leave early.
-The judgment is authoritative as per the law. 
+The AI letter states the tenancy ends on 1 Oct 2025 under the Landlord and Tenant Act (Cap. 158, 1954) s 34(2), and guarantees vacant possession on that date. 
+It lists the tenant’s full NRIC (S1234567A), unit number and phone for contact.
       </pre>
 
       <details class="hint">
         <summary>Need a hint?</summary>
-        Look for missing case name/citation and over-broad claims (“always”).
+        Watch for (1) unredacted PII, (2) outdated or wrong‑jurisdiction statutes, (3) overly definitive promises, and (4) factual inaccuracies.
       </details>
     </section>
 
@@ -52,24 +52,25 @@ The judgment is authoritative as per the law.
       <form class="mcq" data-module="summary">
         <label class="mcq-option">
           <input type="radio" name="q1" value="A" />
-          A) The summary properly cites the case by name and neutral citation.
+          A) It guarantees a specific legal outcome (“vacant possession … without exception”).
         </label>
         <label class="mcq-option">
           <input type="radio" name="q1" value="B" />
-          B) The phrase “always” is overly absolute; and there is no case name/citation/year.
+          B) It exposes confidential personal identifiers (NRIC, unit, phone) that should be redacted.
         </label>
         <label class="mcq-option">
           <input type="radio" name="q1" value="C" />
-          C) The summary is acceptable because it references “the law” generally.
+          C) It cautiously qualifies conclusions and cites current law precisely.
         </label>
         <label class="mcq-option">
           <input type="radio" name="q1" value="D" />
-          D) The currency is clear from the text.
+          D) It cites a current, correct Singapore statute with the right section.
         </label>
 
         <div class="actions">
           <button class="btn" type="submit">Check Answer</button>
           <button class="btn btn-secondary" type="button" data-show-analysis>Show Risk Coaching</button>
+          <button class="btn btn-tertiary" type="button" id="nextSummaryBtn" aria-controls="main">Next Question ▶</button>
         </div>
       </form>
 
@@ -94,9 +95,14 @@ The judgment is authoritative as per the law.
     <section class="card">
       <h2>Learning points</h2>
       <ul class="bullets">
-        <li>Always include <em>case name</em>, <em>neutral citation</em>, and <em>year</em> for summaries.</li>
-        <li>Avoid absolute statements; outcomes depend on facts and law.</li>
-        <li>State jurisdiction and date (e.g., “Singapore law, as at Sep 2025”).</li>
+        <li><strong>Citations:</strong> Include <em>case name</em>, <em>neutral citation</em>, <em>court level</em> (e.g., SGCA vs SGHC), <em>year</em>, and a paragraph pinpoint where possible.</li>
+        <li><strong>Currency &amp; Jurisdiction:</strong> Verify that any statute/case is <em>current</em> and from <em>Singapore</em>; do not treat foreign law as binding unless applicable.</li>
+        <li><strong>Confidentiality:</strong> <em>Redact PII</em> (NRIC/FIN, full address/unit, phone, email) when summarising letters or facts.</li>
+        <li><strong>No guarantees:</strong> Avoid absolutes like “always,” “automatic,” or “will win.” Use qualified language (e.g., “may,” “subject to court discretion”).</li>
+        <li><strong>Existence check:</strong> Confirm the cited <em>statute</em> or <em>contract clause</em> actually exists and is correctly numbered/titled.</li>
+        <li><strong>“Latest authority” claims:</strong> If you say something is the latest, confirm the <em>date</em> and <em>court level</em> (SGCA outranks SGHC).</li>
+        <li><strong>Substance over slogans:</strong> Remedies (e.g., possession orders, deposit forfeiture) are <em>fact- and contract-dependent</em>; courts exercise discretion.</li>
+        <li><strong>Scope statement:</strong> State jurisdiction and date context (e.g., “Singapore law, as at Sep 2025”).</li>
       </ul>
     </section>
   </main>
@@ -106,5 +112,208 @@ The judgment is authoritative as per the law.
   </footer>
 
   <script src="scripts/app.js" defer></script>
+  <script>
+  (function () {
+    // Cache DOM nodes for SUMMARY module
+    const promptPre = document.querySelector('main.container section.card pre.pre.small'); // first prompt block
+    const summaryPre = document.getElementById('summaryOutput');
+    const hintDetails = document.querySelector('section.card details.hint');
+    const hintSummary = hintDetails ? hintDetails.querySelector('summary') : null;
+    const feedback = document.getElementById('summaryFeedback');
+    const risk = document.getElementById('summaryRisk');
+    const form = document.querySelector('form.mcq[data-module="summary"]');
+    const options = Array.from(form.querySelectorAll('.mcq-option'));
+    const nextBtn = document.getElementById('nextSummaryBtn');
+    // Heading for this MCQ card
+    const questionHeading = form ? form.closest('section.card').querySelector('h2') : null;
+
+    // Define rotating scenarios (focus: authority, currency, specificity; avoid absolutes)
+    const scenarios = [
+    // 1) PII exposure in summary (Correct: B)
+    {
+      question: 'Which confidentiality issue is most serious in this summary?',
+      prompt: [
+        'Summarise the key legal requirements for terminating a residential lease in Singapore based on an AI‑drafted termination letter.',
+        'Include whether the statute cited is current, avoid personal identifiers, and flag any guarantees about outcomes.'
+      ].join('\n'),
+      summary: [
+        'The AI letter states the tenancy ends on 1 Oct 2025 under the Landlord and Tenant Act (Cap. 158, 1954) s 34(2), and guarantees vacant possession on that date.',
+        'It lists the tenant’s full NRIC (S1234567A), unit number and phone for contact.'
+      ].join('\n'),
+      hint: 'Watch for unredacted PII and absolute promises.',
+      options: [
+        'A) It guarantees a specific legal outcome (“vacant possession … without exception”).',
+        'B) It exposes confidential personal identifiers (NRIC, unit, phone) that should be redacted.',
+        'C) It cautiously qualifies conclusions and cites current law precisely.',
+        'D) It cites a current, correct Singapore statute with the right section.'
+      ],
+      correct: 'B'
+    },
+    // 2) Non‑existent / incorrect statute (Correct: D)
+    {
+      question: 'Which legal reference error did the AI most likely make?',
+      prompt: [
+        'Summarise Singapore rules on termination of employment based on an AI‑generated letter.',
+        'State whether the cited law exists and if the conclusion aligns with current Employment Act provisions.'
+      ].join('\n'),
+      summary: [
+        'The letter cites the Employment Law Act 2010 s 34 to allow immediate termination without notice in all cases.',
+        'It concludes no severance is ever payable.'
+      ].join('\n'),
+      hint: 'Check if the cited statute actually exists and whether “in all cases” is correct.',
+      options: [
+        'A) It carefully limits conclusions based on facts.',
+        'B) It provides a precise neutral citation to a Court of Appeal case.',
+        'C) It redacts employee identifiers and avoids PII.',
+        'D) It cites a non‑existent or wrong statute (“Employment Law Act 2010”) while asserting universal rules.'
+      ],
+      correct: 'D'
+    },
+    // 3) Over‑definitive outcomes (Correct: A)
+    {
+      question: 'What is the main drafting risk in this summary?',
+      prompt: [
+        'Summarise remedies for landlord when rent is unpaid based on an AI‑generated warning letter.',
+        'Avoid guaranteeing outcomes; note that court orders are discretionary.'
+      ].join('\n'),
+      summary: [
+        'The letter states the landlord will obtain a possession order next week and recover full costs.',
+        'Therefore, eviction is automatic once the notice is sent.'
+      ].join('\n'),
+      hint: 'Look for guarantees about litigation outcomes.',
+      options: [
+        'A) It guarantees a litigation outcome (possession order and costs) as automatic.',
+        'B) It avoids PII entirely.',
+        'C) It cites only the contract clause cautiously.',
+        'D) It neutrally sets out potential remedies subject to court discretion.'
+      ],
+      correct: 'A'
+    },
+    // 4) Outdated / wrong‑jurisdiction reference (Correct: C)
+    {
+      question: 'Why is this authority problematic for a Singapore summary?',
+      prompt: [
+        'Summarise tenant repair obligations from an AI letter.',
+        'Ensure authorities are current and from the correct jurisdiction.'
+      ].join('\n'),
+      summary: [
+        'The letter relies on Section 14 of the UK Landlord and Tenant Act 1985 to mandate immediate repair.',
+        'It presents the UK statute as binding in Singapore.'
+      ].join('\n'),
+      hint: 'Check jurisdiction and whether UK statutes bind Singapore courts.',
+      options: [
+        'A) It properly cites a Singapore statute.',
+        'B) It uses neutral language and avoids guarantees.',
+        'C) It cites foreign (UK) legislation as if binding in Singapore.',
+        'D) It provides a relevant Singapore contract clause reference only.'
+      ],
+      correct: 'C'
+    },
+    // 5) Outdated case claimed as latest (Correct: B)
+    {
+      question: 'Which currency issue appears in this summary?',
+      prompt: [
+        'Summarise the latest (2024–2025) SGCA position on wrongful eviction damages based on an AI‑produced case summary.',
+        'Indicate if the case cited is truly the latest.'
+      ].join('\n'),
+      summary: [
+        'The summary relies on a 2012 High Court case and states it is the latest authority in 2025.',
+        'No SGCA citation is provided.'
+      ].join('\n'),
+      hint: 'Is a 2012 HC case truly the latest authority for 2025? Check court level and date.',
+      options: [
+        'A) It provides a recent SGCA citation with a paragraph pinpoint.',
+        'B) It treats an older HC case as the “latest” for 2025 without SGCA support.',
+        'C) It avoids absolute phrasing entirely.',
+        'D) It lists jurisdiction as Singapore correctly.'
+      ],
+      correct: 'B'
+    },
+    // 6) Factual inaccuracy about deposits (Correct: D)
+    {
+      question: 'What factual inaccuracy should be flagged?',
+      prompt: [
+        'Summarise deposit handling rules based on an AI final‑demand letter.',
+        'Identify misstatements of law or fact.'
+      ].join('\n'),
+      summary: [
+        'The letter says deposits are always automatically forfeited on any breach, and courts do not review forfeiture.',
+        'It asserts there is no need to check the tenancy agreement terms.'
+      ].join('\n'),
+      hint: 'Consider whether deposit forfeiture is automatic and unreviewable in Singapore.',
+      options: [
+        'A) It neutrally states that forfeiture depends on facts and contract terms.',
+        'B) It correctly lists factors courts consider before forfeiture.',
+        'C) It provides a case citation supporting automatic forfeiture in all cases.',
+        'D) It incorrectly states deposit forfeiture is always automatic and unreviewable.'
+      ],
+      correct: 'D'
+    }
+  ];
+
+    let idx = 0;
+
+    function render(i) {
+      const sc = scenarios[i];
+      // Update heading
+      if (questionHeading) questionHeading.textContent = sc.question;
+      // Update prompt and generated summary
+      if (promptPre) promptPre.textContent = sc.prompt;
+      if (summaryPre) summaryPre.textContent = sc.summary;
+      // Update hint body (preserve <summary>)
+      if (hintDetails) {
+        if (hintSummary) {
+          hintDetails.innerHTML = '';
+          hintDetails.appendChild(hintSummary);
+          hintDetails.appendChild(document.createTextNode(' ' + sc.hint));
+        }
+      }
+      // Update options
+      options.forEach((label, j) => {
+        const input = label.querySelector('input[type="radio"]');
+        if (input) { input.checked = false; input.setAttribute('aria-checked', 'false'); }
+        const textNode = label.childNodes[label.childNodes.length - 1];
+        if (textNode && textNode.nodeType === Node.TEXT_NODE) {
+          textNode.nodeValue = ' ' + sc.options[j];
+        } else {
+          label.innerHTML = label.querySelector('input').outerHTML + ' ' + sc.options[j];
+        }
+      });
+      // Set correct answer for this scenario
+      form.dataset.correct = sc.correct;
+      // Reset feedback & risk panes
+      if (feedback) feedback.textContent = '';
+      if (risk) risk.hidden = true;
+      // Focus first radio
+      const firstRadio = form.querySelector('input[type="radio"]');
+      if (firstRadio) firstRadio.focus({ preventScroll: false });
+    }
+
+    // Strict grading using per-scenario key; block legacy handlers
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      const selected = form.querySelector('input[type="radio"]:checked');
+      const key = (form.dataset.correct || '').trim();
+      const ok = !!selected && (!!key ? selected.value === key : false);
+      if (feedback) {
+        feedback.textContent = ok
+          ? '✅ Correct'
+          : '❌ Not quite — try again or open Risk Coaching.';
+      }
+    }, true);
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', function () {
+        idx = (idx + 1) % scenarios.length;
+        render(idx);
+        if (feedback) feedback.setAttribute('aria-live', 'polite');
+      });
+    }
+
+    // Initial render
+    render(idx);
+  })();
+  </script>
 </body>
 </html>
