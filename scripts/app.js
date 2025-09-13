@@ -6,6 +6,7 @@
 // Accessible, no external dependencies.
 
 // ---------- NAV ----------
+
 const navToggle = document.querySelector(".nav-toggle");
 const navList = document.querySelector("[data-nav]");
 if (navToggle && navList) {
@@ -304,8 +305,64 @@ if (genBtn && outputEl) {
       const answer = await callDeepseek(userPrompt);
       outputEl.textContent = answer;
 
-      const analysis = analyze(`${userPrompt}\n\n${answer}`);
+      const analysis = analyze(answer);
+      // ✅ Paint results (same as your mockGenerate section)
+      if (riskBadge) {
+        riskBadge.textContent =
+          analysis.riskLevel === "RED" ? "High" :
+          analysis.riskLevel === "AMBER" ? "Medium" : "Low";
+        riskBadge.className = "badge " + (
+          analysis.riskLevel === "RED" ? "bad" :
+          analysis.riskLevel === "AMBER" ? "warn" : "ok"
+        );
+      }
+
+      if (riskSummary) {
+        riskSummary.innerHTML = "";
+        const li = document.createElement("li");
+        li.textContent = `Risk level: ${analysis.riskLevel}`;
+        riskSummary.appendChild(li);
+      }
+
+      if (piiList) {
+        piiList.innerHTML = "";
+        if (analysis.findings.pii.length === 0) {
+          const li = document.createElement("li");
+          li.textContent = "No obvious PII detected.";
+          piiList.appendChild(li);
+        } else {
+          analysis.findings.pii.forEach(f => {
+            const li = document.createElement("li");
+            li.textContent = f;
+            piiList.appendChild(li);
+          });
+        }
+      }
+
+      if (hallucinationList) {
+        hallucinationList.innerHTML = "";
+        analysis.findings.hallucination.forEach(f => {
+          const li = document.createElement("li");
+          li.textContent = f;
+          hallucinationList.appendChild(li);
+        });
+        analysis.findings.currency.forEach(f => {
+          const li = document.createElement("li");
+          li.textContent = f;
+          hallucinationList.appendChild(li);
+        });
+      }
+
+      if (tipsList) {
+        tipsList.innerHTML = "";
+        analysis.tips.forEach(t => {
+          const li = document.createElement("li");
+          li.textContent = t;
+          tipsList.appendChild(li);
+        });
+      }
       // keep your existing risk panel rendering here
+
     } catch (e) {
       outputEl.textContent = `Error: ${e.message}`;
     }
