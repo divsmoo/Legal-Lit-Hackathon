@@ -75,13 +75,7 @@ def analyze_text(text):
 
 
 # Example Test Case
-text = """
-We therefore terminate our agreement with immediate effect. You have been dishonest and acted in bad faith.
-Your payment of $12,000 is still outstanding and must be repaid immediately.
-Please contact samantha.lee@ourcompany.com or call +65 9876 5432.
-Our manager, Rajesh Kumar (NRIC: S1234567A), will arrange collection.
-All information must be kept confidential forever.
-"""
+
 
 report = analyze_text(text)
 
