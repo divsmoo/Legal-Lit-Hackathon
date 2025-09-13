@@ -51,6 +51,12 @@ This clause is enforceable under the Landlord and Tenant Act 1954 s 34(2).
 
     <section class="card">
       <h2>What mistake did the AI most likely make?</h2>
+      <div class="progress-row" id="clauseProgressRow" aria-live="polite">
+        <span id="clauseProgressText">Question 1 of 6</span>
+        <div id="clauseProgressBar" style="height:8px;border-radius:4px;background:#eceff3;margin-top:8px;">
+          <div id="clauseProgressFill" style="height:8px;border-radius:4px;width:0%;background:#6172f3;"></div>
+        </div>
+      </div>
       <form class="mcq" data-module="clause" aria-label="Multiple choice question: pick one">
         <label class="mcq-option">
           <input type="radio" name="q1" value="A" />
@@ -126,6 +132,8 @@ This clause is enforceable under the Landlord and Tenant Act 1954 s 34(2).
     const sumList = document.getElementById('clauseRiskSummary');
     const piiList = document.getElementById('clausePII');
     const hallList = document.getElementById('clauseHallucination');
+    const progressText = document.getElementById('clauseProgressText');
+    const progressFill = document.getElementById('clauseProgressFill');
 
     // Clause-focused scenarios (factual inaccuracies, outdated/foreign refs, guarantees, PII, hallucinated clauses)
     const scenarios = [
@@ -385,6 +393,9 @@ This clause is enforceable under the Landlord and Tenant Act 1954 s 34(2).
       if (sumList) sumList.innerHTML = '';
       if (piiList) piiList.innerHTML = '';
       if (hallList) hallList.innerHTML = '';
+      // Update progress indicator
+      if (progressText) progressText.textContent = `Question ${i + 1} of ${scenarios.length}`;
+      if (progressFill) progressFill.style.width = `${Math.round((i / scenarios.length) * 100)}%`;
       // Focus first radio
       const firstRadio = form.querySelector('input[type="radio"]');
       if (firstRadio) firstRadio.focus({ preventScroll: false });

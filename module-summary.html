@@ -49,6 +49,12 @@ It lists the tenant’s full NRIC (S1234567A), unit number and phone for contact
 
     <section class="card">
       <h2>What is the best critique?</h2>
+      <div class="progress-row" id="summaryProgressRow" aria-live="polite">
+        <span id="summaryProgressText">Question 1 of 6</span>
+        <div id="summaryProgressBar" style="height:8px;border-radius:4px;background:#eceff3;margin-top:8px;">
+          <div id="summaryProgressFill" style="height:8px;border-radius:4px;width:0%;background:#6172f3;"></div>
+        </div>
+      </div>
       <form class="mcq" data-module="summary">
         <label class="mcq-option">
           <input type="radio" name="q1" value="A" />
@@ -121,6 +127,8 @@ It lists the tenant’s full NRIC (S1234567A), unit number and phone for contact
     const hintSummary = hintDetails ? hintDetails.querySelector('summary') : null;
     const feedback = document.getElementById('summaryFeedback');
     const risk = document.getElementById('summaryRisk');
+    const progressText = document.getElementById('summaryProgressText');
+    const progressFill = document.getElementById('summaryProgressFill');
     const form = document.querySelector('form.mcq[data-module="summary"]');
     const options = Array.from(form.querySelectorAll('.mcq-option'));
     const nextBtn = document.getElementById('nextSummaryBtn');
@@ -281,6 +289,9 @@ It lists the tenant’s full NRIC (S1234567A), unit number and phone for contact
       });
       // Set correct answer for this scenario
       form.dataset.correct = sc.correct;
+      // Update progress indicator and bar
+      if (progressText) progressText.textContent = `Question ${i + 1} of ${scenarios.length}`;
+      if (progressFill) progressFill.style.width = `${Math.round((i / scenarios.length) * 100)}%`;
       // Reset feedback & risk panes
       if (feedback) feedback.textContent = '';
       if (risk) risk.hidden = true;
